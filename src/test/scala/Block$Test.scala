@@ -12,8 +12,8 @@ class Block$Test extends FunSuite {
 
   val staticActivityStartsAt0 = PlaceTimeStation("Home",(0,2),"")
   val movingActivityStartsAt1 = PlaceTimePath("Supermarket","Zoo",(2,3),"")
-  val sequenceOfActivities = BlockSequence(List(staticActivityStartsAt0,movingActivityStartsAt1))
-  val unsortedSequenceOfActivities = BlockSequence(List(movingActivityStartsAt1,staticActivityStartsAt0))
+  val sequenceOfActivities = BlockSequence(List(SingleBlock(staticActivityStartsAt0),SingleBlock(movingActivityStartsAt1)))
+  val unsortedSequenceOfActivities = BlockSequence(List(SingleBlock(movingActivityStartsAt1),SingleBlock(staticActivityStartsAt0)))
 
   // testing times
   test("single static activity starts at 0")(assert(SingleBlock(staticActivityStartsAt0).startTime == 0))
