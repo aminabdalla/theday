@@ -25,21 +25,21 @@ class Block$Test extends FunSuite {
   val unsortedSequenceOfActivities = ActivitySequence(List(SingleActivity(movingActivityStartsAt2),SingleActivity(staticActivityStartsAt0)))
 
   // testing times
-  test("single static activity starts at 0")(assert(SingleActivity(staticActivityStartsAt0).startTime == 0))
+  test("single static activity starts at 0")(assert(SingleActivity(staticActivityStartsAt0).getStartTime == 0))
 
-  test("single moving activity starts at 0")(assert(SingleActivity(movingActivityStartsAt2).startTime == 2))
+  test("single moving activity starts at 0")(assert(SingleActivity(movingActivityStartsAt2).getStartTime == 2))
 
-  test("sequence of being home&going to the zoo block starts at 0")(assert(sequenceOfActivities.startTime == 0))
+  test("sequence of being home&going to the zoo block starts at 0")(assert(sequenceOfActivities.getStartTime == 0))
 
-  test("sequence of unsorted home&going to the zoo activities start at 0")(assert(unsortedSequenceOfActivities.startTime == 0))
+  test("sequence of unsorted home&going to the zoo activities start at 0")(assert(unsortedSequenceOfActivities.getStartTime == 0))
 
-  test("single static activity ends at 2")(assert(SingleActivity(staticActivityStartsAt0).endTime == 2))
+  test("single static activity ends at 2")(assert(SingleActivity(staticActivityStartsAt0).getEndTime == 2))
 
-  test("single moving activity ends at 2")(assert(SingleActivity(movingActivityStartsAt2).endTime == 3))
+  test("single moving activity ends at 2")(assert(SingleActivity(movingActivityStartsAt2).getEndTime == 3))
 
-  test("sequence of static&moving activities end at 3")(assert(sequenceOfActivities.endTime == 3))
+  test("sequence of static&moving activities end at 3")(assert(sequenceOfActivities.getEndTime == 3))
 
-  test("sequence of unsorted static&moving activities end at 3")(assert(unsortedSequenceOfActivities.endTime == 3))
+  test("sequence of unsorted static&moving activities end at 3")(assert(unsortedSequenceOfActivities.getEndTime == 3))
 
   // testing places
   test("single static activity starts at Home")(assert(SingleActivity(staticActivityStartsAt0).startPlace == "Home"))

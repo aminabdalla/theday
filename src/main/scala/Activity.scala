@@ -1,19 +1,20 @@
-import Activity.{Interval, Place}
+import java.sql.Time
 
-abstract class Activity(var name: String,var interval :(Int,Int)){
+import Activity.Place
+import TemporalEvent.Interval
+
+abstract class Activity(var name: String,var timeSpan : Interval) extends RelationalTemporalEvent{
   def getPlaces : List[Place]
-  def getTimeSpan : Interval = interval
-  def getStartTime : Int = interval._1
-  def getEndTime : Int = interval._2
   def getStartPlace: Place
   def getEndPlace : Place
   def getDescription : String = name
+  def getStartTime : Int = timeSpan._1
+  def getEndTime : Int = timeSpan._2
 }
 
 
 object Activity {
   type Place = String
-  type Interval = (Int, Int)
 
   final case class PlaceTimeStation(
                                      var place: Place,
