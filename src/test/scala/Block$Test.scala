@@ -81,4 +81,9 @@ class Block$Test extends FunSuite {
   test("a plan from home to the supermarket to the zoo, has a temporal projection of home, supermarket zoo")(assert(unsortedSequenceOfActivities.placeProjection.exists(a => List("Zoo","Supermarket","Home").contains(a))))
   test("a plan of 2 activities at the same place has a temporal projection of only one place")(assert(stayingAtHomePlan.placeProjection.contains("Home")),assert(stayingAtHomePlan.placeProjection.size == 1))
 
+  //tests temporal containment
+  val goingToUniFrom0_5 = SingleActivity(PlaceTimeStation("Uni",(0,5),""))
+  val attendingLecturesFrom1_4 = ActivitySequence(List(SingleActivity(PlaceTimeStation("Maths",(1,2),"")),SingleActivity(PlaceTimeStation("Statistics",(3,4),""))))
+  test("plan to stay in uni is contained by the plan to attend lectures")(assert(attendingLecturesFrom1_4.isTemporallyContainedBy(goingToUniFrom0_5)))
+  test("plan to attend lectures os not contained by going to cinema")(assert(!attendingLecturesFrom1_4.isTemporallyContainedBy(singleActivityStart4End5)))
 }
