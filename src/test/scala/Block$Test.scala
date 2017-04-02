@@ -13,6 +13,7 @@ class Block$Test extends FunSuite {
   val singleActivityStart4End5 = SingleActivity(PlaceTimeStation("Cinema",(4,5),""))
   val coveringActivityStart0End5 = SingleActivity(PlaceTimeStation("Work",(0,5),""))
   val staticActivityStartsAt0 = PlaceTimeStation("Home",(0,2),"")
+  val stayingAtHomeFrom2 = PlaceTimeStation("Home",(2,3),"")
   val movingActivityStartsAt2 = PlaceTimePath("Supermarket","Zoo",(2,3),"")
   val overlappingActivity = PlaceTimeStation("Uni",(0,2),"")
   val overlappingSingleActivity = SingleActivity(overlappingActivity)
@@ -20,6 +21,7 @@ class Block$Test extends FunSuite {
   val SingleActivityat4 = SingleActivity(movingActivityStartsAt2)
   val SingleActivityat2 = SingleActivity(movingActivityStartsAt2)
   val sequenceOfActivities = ActivitySequence(List(SingleActivity(staticActivityStartsAt0),SingleActivity(movingActivityStartsAt2)))
+  val stayingAtHomePlan = ActivitySequence(List(SingleActivity(staticActivityStartsAt0),SingleActivity(stayingAtHomeFrom2)))
   val unsortedSequenceOfActivities = ActivitySequence(List(SingleActivity(movingActivityStartsAt2),SingleActivity(staticActivityStartsAt0)))
 
   // testing times
@@ -71,5 +73,12 @@ class Block$Test extends FunSuite {
   //tests chainable blocks
   test("single block is chainable before or after another block")(assert(SingleActivityat0.isChainable(SingleActivityat2)==true))
   test("sequence block is chainable before or after another block")(assert(sequenceOfActivities.isChainable(singleActivityStart4End5)==true))
+
+  //tests temporalProjection
+  test("a plan with two sequenced activities starting at starts at 0 and ends at 3")(assert(unsortedSequenceOfActivities.temporalProjection == (0,3)))
+
+  //tests place projection
+  test("a plan from home to the supermarket to the zoo, has a temporal projection of home, supermarket zoo")(assert(unsortedSequenceOfActivities.placeProjection.exists(a => List("Zoo","Supermarket","Home").contains(a))))
+  test("a plan of 2 activities at the same place has a temporal projection of only one place")(assert(stayingAtHomePlan.placeProjection.contains("Home")),assert(stayingAtHomePlan.placeProjection.size == 1))
 
 }
