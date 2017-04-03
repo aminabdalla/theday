@@ -59,11 +59,11 @@ class Block$Test extends FunSuite {
   test("sequence of unsorted static&moving activities end at Zoo")(assert(unsortedSequenceOfActivities.endPlace == "Zoo"))
 
   //tests isPossible
-  test("single block1 is possible before single2")(assert(SingleActivityat0.isPossibleBefore(SingleActivityat2)))
-  test("single block2 is not possible before single1")(assert(SingleActivityat2.isPossibleBefore(SingleActivityat0) == false))
-  test("single block0 is not possible before overlapping block")(assert(SingleActivityat0.isPossibleBefore(overlappingSingleActivity) == false))
-  test("cannot start one activity if within the time span of another")(assert(SingleActivityat0.isPossibleBefore(coveringActivityStart0End5) == false))
-  test("cannot start one activity before another that falls within it")(assert(coveringActivityStart0End5.isPossibleBefore(SingleActivityat0) == false))
+  test("single block1 is possible before single2")(assert(SingleActivityat0.before(SingleActivityat2)))
+  test("single block2 is not possible before single1")(assert(SingleActivityat2.before(SingleActivityat0) == false))
+  test("single block0 is not possible before overlapping block")(assert(SingleActivityat0.before(overlappingSingleActivity) == false))
+  test("cannot start one activity if within the time span of another")(assert(SingleActivityat0.before(coveringActivityStart0End5) == false))
+  test("cannot start one activity before another that falls within it")(assert(coveringActivityStart0End5.before(SingleActivityat0) == false))
 
 
   //tests parallel blocks
@@ -84,6 +84,6 @@ class Block$Test extends FunSuite {
   //tests temporal containment
   val goingToUniFrom0_5 = SingleActivity(PlaceTimeStation("Uni",(0,5),""))
   val attendingLecturesFrom1_4 = ActivitySequence(List(SingleActivity(PlaceTimeStation("Maths",(1,2),"")),SingleActivity(PlaceTimeStation("Statistics",(3,4),""))))
-  test("plan to stay in uni is contained by the plan to attend lectures")(assert(attendingLecturesFrom1_4.isTemporallyContainedBy(goingToUniFrom0_5)))
-  test("plan to attend lectures os not contained by going to cinema")(assert(!attendingLecturesFrom1_4.isTemporallyContainedBy(singleActivityStart4End5)))
+  test("plan to stay in uni is contained by the plan to attend lectures")(assert(attendingLecturesFrom1_4.during(goingToUniFrom0_5)))
+  test("plan to attend lectures os not contained by going to cinema")(assert(!attendingLecturesFrom1_4.during(singleActivityStart4End5)))
 }

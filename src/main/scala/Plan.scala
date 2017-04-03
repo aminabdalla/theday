@@ -10,10 +10,9 @@ sealed trait Plan extends Monoid[Plan] with RelationalTemporalEvent{
   def temporalProjection : (Time,Time) = (this.getStartTime,this.getEndTime)
   def placeProjection : List[Place]
   def flatten : List[Plan]
-  def isPossibleBefore(plan:Plan) : Boolean
-  def parallel(plan : Plan) : Boolean = if(this.isPossibleBefore(plan) || plan.isPossibleBefore(plan)) false else true
-  def isChainable(plan : Plan) : Boolean = this.isPossibleBefore(plan) || plan.isPossibleBefore(plan)
-  def isTemporallyContainedBy(plan : Plan) : Boolean = this.during(plan)
+  def parallel(plan : Plan) : Boolean = if(this.before(plan) || plan.before(this)) false else true
+  def isChainable(plan : Plan) : Boolean = this.before(plan) || plan.before(this)
+
 }
 
 object Plan {
@@ -27,7 +26,6 @@ object Plan {
     override def flatten: List[Plan] = List(SingleActivity(activity))
     override def Zero: Plan = SingleActivity(null)
     override def op(t1:Plan,t2:Plan): Plan = ActivitySequence(List(t1,t2))
-    override def isPossibleBefore(block: Plan): Boolean = this.getEndTime <= block.getStartTime
     override def placeProjection: List[Place] = activity.getPlaces
 
 
@@ -47,7 +45,6 @@ object Plan {
       case (ActivitySequence(activities),ActivitySequence(activity2)) => new ActivitySequence(List(ActivitySequence(activities),ActivitySequence(activities)))
     }
 
-    override def isPossibleBefore(plan: Plan): Boolean = this.getEndTime <= plan.getStartTime
 
     override def placeProjection: List[Place] = plan.flatMap(p => p.placeProjection).distinct
 
