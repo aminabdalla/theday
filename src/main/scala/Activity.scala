@@ -1,6 +1,5 @@
 import java.sql.Time
 
-import Activity.Place
 import TemporalEvent.Interval
 
 abstract class Activity(var name: String,var timeSpan : Interval) extends RelationalTemporalEvent{
@@ -14,7 +13,6 @@ abstract class Activity(var name: String,var timeSpan : Interval) extends Relati
 
 
 object Activity {
-  type Place = String
 
   final case class PlaceTimeStation(
                                      var place: Place,

@@ -1,6 +1,3 @@
-import Activity.{Place, PlaceTimePath, PlaceTimeStation}
-
-import scala.collection.TraversableOnce.MonadOps
 
 
 sealed trait Plan extends Monoid[Plan] with RelationalTemporalEvent{
@@ -28,7 +25,6 @@ object Plan {
     override def op(t1:Plan,t2:Plan): Plan = ActivitySequence(List(t1,t2))
     override def placeProjection: List[Place] = activity.getPlaces
 
-
   }
 
   case class ActivitySequence(plan: List[Plan]) extends Plan {
@@ -44,7 +40,6 @@ object Plan {
       case (ActivitySequence(activities),SingleActivity(activity2)) => new ActivitySequence(List(ActivitySequence(activities),SingleActivity(activity2)))
       case (ActivitySequence(activities),ActivitySequence(activity2)) => new ActivitySequence(List(ActivitySequence(activities),ActivitySequence(activities)))
     }
-
 
     override def placeProjection: List[Place] = plan.flatMap(p => p.placeProjection).distinct
 
