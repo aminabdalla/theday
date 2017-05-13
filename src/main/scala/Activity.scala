@@ -3,9 +3,9 @@ import java.sql.Time
 import TemporalEvent.Interval
 
 abstract class Activity(var name: String,var timeSpan : Interval) extends RelationalTemporalEvent{
-  def getPlaces : List[Place]
-  def getStartPlace: Place
-  def getEndPlace : Place
+  def getPlaces : List[Location]
+  def getStartPlace: Location
+  def getEndPlace : Location
   def getDescription : String = name
   def getStartTime : Int = timeSpan._1
   def getEndTime : Int = timeSpan._2
@@ -15,28 +15,28 @@ abstract class Activity(var name: String,var timeSpan : Interval) extends Relati
 object Activity {
 
   final case class PlaceTimeStation(
-                                     var place: Place,
+                                     var place: Location,
                                      var span: Interval,
                                      var descr: String) extends Activity(descr,span) {
 
-    override def getPlaces: List[Place] = List(this.place)
+    override def getPlaces: List[Location] = List(this.place)
 
-    override def getStartPlace: Place = place
+    override def getStartPlace: Location = place
 
-    override def getEndPlace: Place = place
+    override def getEndPlace: Location = place
   }
 
   final case class PlaceTimePath(
-                                  var startPlace: Place,
-                                  var endPlace: Place,
+                                  var startPlace: Location,
+                                  var endPlace: Location,
                                   var span: Interval,
                                   var descr: String) extends Activity(descr,span) {
 
-    override def getPlaces: List[Place] = List(this.startPlace,this.endPlace)
+    override def getPlaces: List[Location] = List(this.startPlace,this.endPlace)
 
-    override def getStartPlace: Place = startPlace
+    override def getStartPlace: Location = startPlace
 
-    override def getEndPlace: Place = endPlace
+    override def getEndPlace: Location = endPlace
   }
 
 }

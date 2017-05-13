@@ -10,12 +10,12 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class Block$Test extends FunSuite {
 
-  val singleActivityStart4End5 = SingleActivity(PlaceTimeStation("Cinema",(4,5),""))
-  val coveringActivityStart0End5 = SingleActivity(PlaceTimeStation("Work",(0,5),""))
-  val staticActivityStartsAt0 = PlaceTimeStation("Home",(0,2),"")
-  val stayingAtHomeFrom2 = PlaceTimeStation("Home",(2,3),"")
-  val movingActivityStartsAt2 = PlaceTimePath("Supermarket","Zoo",(2,3),"")
-  val overlappingActivity = PlaceTimeStation("Uni",(0,2),"")
+  val singleActivityStart4End5 = SingleActivity(PlaceTimeStation(new Location("Cinema",(4,5)),(4,5),""))
+  val coveringActivityStart0End5 = SingleActivity(PlaceTimeStation(new Location("Work",(0,5)),(0,5),""))
+  val staticActivityStartsAt0 = PlaceTimeStation(new Location("Home",(0,2)),(0,2),"")
+  val stayingAtHomeFrom2 = PlaceTimeStation(new Location("Home",(2,3)),(2,3),"")
+  val movingActivityStartsAt2 = PlaceTimePath(new Location("Supermarket",(1,1)),new Location("Zoo",(2,3)),(2,3),"")
+  val overlappingActivity = PlaceTimeStation(new Location("Uni",(0,2)),(0,2),"")
   val overlappingSingleActivity = SingleActivity(overlappingActivity)
   val SingleActivityat0 = SingleActivity(staticActivityStartsAt0)
   val SingleActivityat4 = SingleActivity(movingActivityStartsAt2)
@@ -82,8 +82,8 @@ class Block$Test extends FunSuite {
   test("a plan of 2 activities at the same place has a temporal projection of only one place")(assert(stayingAtHomePlan.placeProjection.contains("Home")),assert(stayingAtHomePlan.placeProjection.size == 1))
 
   //tests temporal containment
-  val goingToUniFrom0_5 = SingleActivity(PlaceTimeStation("Uni",(0,5),""))
-  val attendingLecturesFrom1_4 = ActivitySequence(List(SingleActivity(PlaceTimeStation("Maths",(1,2),"")),SingleActivity(PlaceTimeStation("Statistics",(3,4),""))))
+  val goingToUniFrom0_5 = SingleActivity(PlaceTimeStation(new Location("Uni",(0,5)),(0,5),""))
+  val attendingLecturesFrom1_4 = ActivitySequence(List(SingleActivity(PlaceTimeStation(new Location("Maths",(1,2)),(1,2),"")),SingleActivity(PlaceTimeStation(new Location("Statistics",(3,4)),(3,4),""))))
   test("plan to stay in uni is contained by the plan to attend lectures")(assert(attendingLecturesFrom1_4.during(goingToUniFrom0_5)))
   test("plan to attend lectures os not contained by going to cinema")(assert(!attendingLecturesFrom1_4.during(singleActivityStart4End5)))
 }
