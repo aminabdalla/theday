@@ -8,11 +8,13 @@ sealed trait Place{
 }
 
 case class TopPlace(var loc : Location,var children:List[Place]) extends Place {
+  def apply(loc:Location,childs:List[Place]) = new TopPlace(loc,childs)
   override def isParentOf(p: Place): Boolean = true
   override def isChild(p: Place): Boolean = false
 }
 
 case class SubPlace(var loc: Location, var children:List[Place]) extends Place {
+  def apply(loc:Location,childs:List[Place]) = new SubPlace(loc,childs)
   override def isParentOf(p: Place): Boolean = children match {
     case Nil => false
     case list => if (list.contains(p)) true else children.find(subPlace => subPlace.isParentOf(p)).isDefined
