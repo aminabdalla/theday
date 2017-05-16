@@ -19,6 +19,8 @@ object Activity {
                                      var span: Interval,
                                      var descr: String) extends Activity(descr,span) {
 
+    def apply(p : Location,span:Interval,descr:String) = new PlaceTimeStation(p,span,descr)
+
     override def getPlaces: List[Location] = List(this.place)
 
     override def getStartPlace: Location = place
@@ -31,6 +33,8 @@ object Activity {
                                   var endPlace: Location,
                                   var span: Interval,
                                   var descr: String) extends Activity(descr,span) {
+
+    def apply(sp : Location,ep:Location,s:Interval,d:String) = new PlaceTimePath(sp,ep,s,d)
 
     override def getPlaces: List[Location] = List(this.startPlace,this.endPlace)
 
