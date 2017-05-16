@@ -4,18 +4,40 @@ import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 
-/**
-  * Created by amin on 19/03/2017.
-  */
 @RunWith(classOf[JUnitRunner])
 class Block$Test extends FunSuite {
 
-  val singleActivityStart4End5 = SingleActivity(PlaceTimeStation(new Location("Cinema",(4,5)),(4,5),""))
-  val coveringActivityStart0End5 = SingleActivity(PlaceTimeStation(new Location("Work",(0,5)),(0,5),""))
-  val staticActivityStartsAt0 = PlaceTimeStation(new Location("Home",(0,2)),(0,2),"")
-  val stayingAtHomeFrom2 = PlaceTimeStation(new Location("Home",(2,3)),(2,3),"")
-  val movingActivityStartsAt2 = PlaceTimePath(new Location("Supermarket",(1,1)),new Location("Zoo",(2,3)),(2,3),"")
-  val overlappingActivity = PlaceTimeStation(new Location("Uni",(0,2)),(0,2),"")
+  val earthLoc: Location = Location("Earth", (0, 0))
+  val europeLoc: Location = Location("Europe", (0, 1))
+  val germanyLoc: Location = Location("Germany", (0, 2))
+  val ukLoc: Location = Location("UK", (0, 3))
+  val londonLoc: Location = Location("London", (0, 4))
+  val cinemaLoc: Location = Location("Cinema", (4, 5))
+  val uniLoc: Location = Location("Uni", (0, 5))
+  val homeLoc: Location = Location("Home", (0, 2))
+  val supermarketLoc: Location = Location("Supermarket", (1, 1))
+  val workLoc: Location = Location("Work", (0, 5))
+  val zooLoc: Location = Location("Zoo", (2, 3))
+
+
+  val workPlace: Place = SubPlace(workLoc,List())
+  val uniPlace: Place = SubPlace(uniLoc,List())
+  val homePlace: Place = SubPlace(homeLoc,List())
+  val cinemaPlace: Place = SubPlace(cinemaLoc,List())
+  val supermarketPlace: Place = SubPlace(supermarketLoc,List())
+  val zooPlace: Place = SubPlace(zooLoc,List())
+
+  val london: Place = SubPlace(londonLoc,List(workPlace,uniPlace,homePlace,cinemaPlace,supermarketPlace,zooPlace))
+  val earth = TopPlace(loc = earthLoc,List(europe))
+  val germany = SubPlace(loc = germanyLoc,List())
+  val europe = SubPlace(loc = europeLoc,List(germany))
+
+  val singleActivityStart4End5 = SingleActivity(PlaceTimeStation(cinemaPlace,(4,5),""))
+  val coveringActivityStart0End5 = SingleActivity(PlaceTimeStation(workPlace,(0,5),""))
+  val staticActivityStartsAt0 = PlaceTimeStation( homePlace,(0,2),"")
+  val stayingAtHomeFrom2 = PlaceTimeStation( homePlace,(2,3),"")
+  val movingActivityStartsAt2 = PlaceTimePath( supermarketPlace, zooPlace,(2,3),"")
+  val overlappingActivity = PlaceTimeStation( uniPlace,(0,2),"")
   val overlappingSingleActivity = SingleActivity(overlappingActivity)
   val SingleActivityat0 = SingleActivity(staticActivityStartsAt0)
   val SingleActivityat4 = SingleActivity(movingActivityStartsAt2)
@@ -42,21 +64,21 @@ class Block$Test extends FunSuite {
   test("sequence of unsorted static&moving activities end at 3")(assert(unsortedSequenceOfActivities.getEndTime == 3))
 
   // testing places
-  test("single static activity starts at Home")(assert(SingleActivity(staticActivityStartsAt0).startPlace == "Home"))
+  test("single static activity starts at Home")(assert(SingleActivity(staticActivityStartsAt0).startPlace.getLocation.name == "Home"))
 
-  test("single moving activity starts at Home")(assert(SingleActivity(movingActivityStartsAt2).startPlace == "Supermarket"))
+  test("single moving activity starts at Home")(assert(SingleActivity(movingActivityStartsAt2).startPlace.getLocation.name == "Supermarket"))
 
-  test("sequence of static&moving activities start at Home")(assert(sequenceOfActivities.startPlace == "Home"))
+  test("sequence of static&moving activities start at Home")(assert(sequenceOfActivities.startPlace.getLocation.name == "Home"))
 
-  test("sequence of unsorted static&moving activities start at Home")(assert(unsortedSequenceOfActivities.startPlace == "Home"))
+  test("sequence of unsorted static&moving activities start at Home")(assert(unsortedSequenceOfActivities.startPlace.getLocation.name == "Home"))
 
-  test("single static activity ends at Home")(assert(SingleActivity(staticActivityStartsAt0).endPlace == "Home"))
+  test("single static activity ends at Home")(assert(SingleActivity(staticActivityStartsAt0).endPlace.getLocation.name == "Home"))
 
-  test("single moving activity ends at Zoo")(assert(SingleActivity(movingActivityStartsAt2).endPlace == "Zoo"))
+  test("single moving activity ends at Zoo")(assert(SingleActivity(movingActivityStartsAt2).endPlace.getLocation.name == "Zoo"))
 
-  test("sequence of static&moving activities end at Zoo")(assert(sequenceOfActivities.endPlace == "Zoo"))
+  test("sequence of static&moving activities end at Zoo")(assert(sequenceOfActivities.endPlace.getLocation.name == "Zoo"))
 
-  test("sequence of unsorted static&moving activities end at Zoo")(assert(unsortedSequenceOfActivities.endPlace == "Zoo"))
+  test("sequence of unsorted static&moving activities end at Zoo")(assert(unsortedSequenceOfActivities.endPlace.getLocation.name == "Zoo"))
 
   //tests isPossible
   test("single block1 is possible before single2")(assert(SingleActivityat0.before(SingleActivityat2)))
@@ -78,12 +100,13 @@ class Block$Test extends FunSuite {
   test("a plan with two sequenced activities starting at starts at 0 and ends at 3")(assert(unsortedSequenceOfActivities.temporalProjection == (0,3)))
 
   //tests place projection
-  test("a plan from home to the supermarket to the zoo, has a temporal projection of home, supermarket zoo")(assert(unsortedSequenceOfActivities.placeProjection.exists(a => List("Zoo","Supermarket","Home").contains(a))))
-  test("a plan of 2 activities at the same place has a temporal projection of only one place")(assert(stayingAtHomePlan.placeProjection.contains("Home")),assert(stayingAtHomePlan.placeProjection.size == 1))
+  test("a plan from home to the supermarket to the zoo, has a temporal projection of home, supermarket zoo")(assert(unsortedSequenceOfActivities.placeProjection.exists(a => List("Zoo","Supermarket","Home").contains(a.getLocation.name))))
+  test("a plan of 2 activities at the same place has a temporal projection of only one place")(assert(stayingAtHomePlan.placeProjection.map(p => p.getLocation.name).contains("Home")),assert(stayingAtHomePlan.placeProjection.size == 1))
+
 
   //tests temporal containment
-  val goingToUniFrom0_5 = SingleActivity(PlaceTimeStation(new Location("Uni",(0,5)),(0,5),""))
-  val attendingLecturesFrom1_4 = ActivitySequence(List(SingleActivity(PlaceTimeStation(new Location("Maths",(1,2)),(1,2),"")),SingleActivity(PlaceTimeStation(new Location("Statistics",(3,4)),(3,4),""))))
+  val goingToUniFrom0_5 = SingleActivity(PlaceTimeStation( uniPlace,(0,5),""))
+  val attendingLecturesFrom1_4 = ActivitySequence(List(SingleActivity(PlaceTimeStation( uniPlace,(1,2),"")),SingleActivity(PlaceTimeStation(uniPlace,(3,4),""))))
   test("plan to stay in uni is contained by the plan to attend lectures")(assert(attendingLecturesFrom1_4.during(goingToUniFrom0_5)))
   test("plan to attend lectures os not contained by going to cinema")(assert(!attendingLecturesFrom1_4.during(singleActivityStart4End5)))
 }
