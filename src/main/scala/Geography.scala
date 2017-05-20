@@ -1,28 +1,23 @@
-sealed trait Place{
-  def isParentOf(p : Place) : Boolean
-  def isChild(p : Place) : Boolean
-  def getLocation : Location
+
+trait Geography {
+
+  def spatiallyContains(p1 : Place, p2:Place) : Boolean
+  def transportDistance(p1 : Place, p2:Place) : Double
+  def euclideanDistance(p1 : Place, p2:Place): Double
+  def travelTime(p1 : Place, p2:Place) : Double
+  def pointRepresentation(p : Place): (Int,Int)
+
 }
 
-case class TopPlace(var loc : Location,var children:List[Place]) extends Place {
-  def apply(loc:Location,childs:List[Place]) = new TopPlace(loc,childs)
-  def getLocation = loc
-  override def isParentOf(p: Place): Boolean = true
-  override def isChild(p: Place): Boolean = false
-}
 
-case class SubPlace(var loc: Location, var children:List[Place]) extends Place {
-  def apply(loc:Location,childs:List[Place]) = new SubPlace(loc,childs)
-  def getLocation = loc
-  override def isParentOf(p: Place): Boolean = children match {
-    case Nil => false
-    case list => if (list.contains(p)) true else children.find(subPlace => subPlace.isParentOf(p)).isDefined
-  }
+object Geography extends Geography{
+  override def spatiallyContains(p1: Place, p2: Place): Boolean = ???
 
-  override def isChild(p: Place): Boolean = p match {
-    case TopPlace(loc,children) => true
-    case SubPlace(loc,children) => if (children.contains(this)) true
-    else if (children.isEmpty) false
-    else children.find(c => this.isChild(c)).isDefined
-  }
+  override def pointRepresentation(p: Place): (Int, Int) = ???
+
+  override def euclideanDistance(p1: Place, p2: Place): Double = ???
+
+  override def travelTime(p1: Place, p2: Place): Double = ???
+
+  override def transportDistance(p1: Place, p2: Place): Double = ???
 }
