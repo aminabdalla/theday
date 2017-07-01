@@ -5,7 +5,8 @@ trait Geography {
   def transportDistance(p1 : Place, p2:Place) : Double
   def euclideanDistance(p1 : Place, p2:Place): Double
   def travelTime(p1 : Place, p2:Place) : Double
-  def pointRepresentation(p : Place): (Int,Int)
+  def geomRepresentation(p : Place): Geometry
+  implicit def toGeom(p:Place) : Geometry = p.getLocation.geometry
 
 }
 
@@ -13,11 +14,11 @@ trait Geography {
 object Geography extends Geography{
   override def spatiallyContains(p1: Place, p2: Place): Boolean = ???
 
-  override def pointRepresentation(p: Place): (Int, Int) = ???
+  override def geomRepresentation(p: Place): Geometry = p
 
-  override def euclideanDistance(p1: Place, p2: Place): Double = ???
+  override def euclideanDistance(p1: Place, p2: Place): Double = p1.euclideanDistance(p2)
 
-  override def travelTime(p1: Place, p2: Place): Double = ???
+  override def travelTime(p1: Place, p2: Place): Double = euclideanDistance(p1,p2) * 2
 
-  override def transportDistance(p1: Place, p2: Place): Double = ???
+  override def transportDistance(p1: Place, p2: Place): Double =  euclideanDistance(p1,p2) * 1.5
 }

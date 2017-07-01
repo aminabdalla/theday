@@ -1,4 +1,5 @@
 import Activity.{PlaceTimePath, PlaceTimeStation}
+import Geometry.POINT
 import Plan.{ActivitySequence, SingleActivity}
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
@@ -7,18 +8,17 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class Block$Test extends FunSuite {
 
-  val earthLoc: Location = Location("Earth", (0, 0))
-  val europeLoc: Location = Location("Europe", (0, 1))
-  val germanyLoc: Location = Location("Germany", (0, 2))
-  val ukLoc: Location = Location("UK", (0, 3))
-  val londonLoc: Location = Location("London", (0, 4))
-  val cinemaLoc: Location = Location("Cinema", (4, 5))
-  val uniLoc: Location = Location("Uni", (0, 5))
-  val homeLoc: Location = Location("Home", (0, 2))
-  val supermarketLoc: Location = Location("Supermarket", (1, 1))
-  val workLoc: Location = Location("Work", (0, 5))
-  val zooLoc: Location = Location("Zoo", (2, 3))
-
+  val earthLoc: Location = Location("Earth", POINT(0, 0))
+  val europeLoc: Location = Location("Europe", POINT(0, 1))
+  val germanyLoc: Location = Location("Germany", POINT(0, 2))
+  val ukLoc: Location = Location("UK", POINT(0, 3))
+  val londonLoc: Location = Location("London", POINT(0, 4))
+  val cinemaLoc: Location = Location("Cinema", POINT(4, 5))
+  val uniLoc: Location = Location("Uni", POINT(0, 5))
+  val homeLoc: Location = Location("Home", POINT(0, 2))
+  val supermarketLoc: Location = Location("Supermarket", POINT(1, 1))
+  val workLoc: Location = Location("Work", POINT(0, 5))
+  val zooLoc: Location = Location("Zoo", POINT(2, 3))
 
   val workPlace: Place = SubPlace(workLoc,List())
   val uniPlace: Place = SubPlace(uniLoc,List())
