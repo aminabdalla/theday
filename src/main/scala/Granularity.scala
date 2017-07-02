@@ -1,5 +1,3 @@
-
-
 sealed abstract trait Granularity extends Ordered[Granularity]{
 
   def coarsen : Granularity
@@ -144,4 +142,83 @@ final case object World extends SpatialGranularity{
   }
 }
 
+sealed abstract trait TemporalGranularity extends Granularity{
+  def top : Granularity = Year
+  def bottom : Granularity = Second
+  override def coarsen : Granularity  = this match {
+    case MeetingPoint => Room
+    case Room => Building
+    case District => City
+    case City => State
+    case State => Country
+    case Country => Continent
+    case Continent => World
+    case World => World
+  }
+}
 
+final case object Second extends TemporalGranularity{
+  override def compare(that: Granularity): Int = that match {
+    case Second => 0
+    case Minute => 1
+    case Hour => 1
+    case Day => 1
+    case Month => 1
+    case Year => 1
+  }
+}
+
+final case object Minute extends TemporalGranularity{
+  override def compare(that: Granularity): Int = that match {
+    case Second => -1
+    case Minute => 0
+    case Hour => 1
+    case Day => 1
+    case Month => 1
+    case Year => 1
+  }
+}
+
+final case object Hour extends TemporalGranularity{
+  override def compare(that: Granularity): Int = that match {
+    case Second => -1
+    case Minute => -1
+    case Hour => 0
+    case Day => 1
+    case Month => 1
+    case Year => 1
+  }
+}
+
+final case object Day extends TemporalGranularity{
+  override def compare(that: Granularity): Int = that match {
+    case Second => -1
+    case Minute => -1
+    case Hour => -1
+    case Day => 0
+    case Month => 1
+    case Year => 1
+  }
+}
+
+final case object Month extends TemporalGranularity{
+  override def compare(that: Granularity): Int = that match {
+    case Second => -1
+    case Minute => -1
+    case Hour => -1
+    case Day => -1
+    case Month => 0
+    case Year => 1
+  }
+}
+
+final case object Year extends TemporalGranularity{
+  override def compare(that: Granularity): Int = that match {
+    case Second => -1
+    case Minute => -1
+    case Hour => -1
+    case Day => -1
+    case Month => -1
+    case Year => 0
+  }
+}
