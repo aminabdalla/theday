@@ -2,7 +2,18 @@
 
 sealed abstract trait Granularity extends Ordered[Granularity]{
 
-  def coarsen : Granularity = this match {
+  def coarsen : Granularity
+
+  def commonUpperGranule(g : Granularity) : Granularity=
+    if (this < g) g
+    else if(this > g) this
+    else this.coarsen
+}
+
+sealed abstract trait SpatialGranularity extends Granularity{
+  def top : Granularity = World
+  def bottom : Granularity = Room
+  override def coarsen : Granularity  = this match {
     case MeetingPoint => Room
     case Room => Building
     case District => City
@@ -12,17 +23,9 @@ sealed abstract trait Granularity extends Ordered[Granularity]{
     case Continent => World
     case World => World
   }
-
-  def top : Granularity = World
-  def bottom : Granularity = Room
-
-  def commonUpperGranule(g : Granularity) : Granularity=
-    if (this < g) g
-    else if(this > g) this
-    else this.coarsen
 }
 
-final case object MeetingPoint extends Granularity {
+final case object MeetingPoint extends SpatialGranularity{
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 0
     case Room => -1
@@ -35,7 +38,7 @@ final case object MeetingPoint extends Granularity {
     case World => -1
   }
 }
-final case object Room extends Granularity {
+final case object Room extends SpatialGranularity {
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 1
     case Room => 0
@@ -48,7 +51,7 @@ final case object Room extends Granularity {
     case World => -1
   }
 }
-final case object Building extends Granularity {
+final case object Building extends SpatialGranularity {
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 1
     case Room => 1
@@ -61,39 +64,12 @@ final case object Building extends Granularity {
     case World => -1
   }
 }
-final case object Park extends Granularity {
+
+final case object District extends SpatialGranularity {
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 1
     case Room => 1
     case Building => 1
-    case District => -1
-    case City => -1
-    case State => -1
-    case Country => -1
-    case Continent => -1
-    case World => -1
-  }
-}
-final case object Neighbourhood extends Granularity {
-  override def compare(that: Granularity): Int = that match {
-    case MeetingPoint => 1
-    case Room => 1
-    case Building => 1
-    case Park => 1
-    case District => -1
-    case City => -1
-    case State => -1
-    case Country => -1
-    case Continent => -1
-    case World => -1
-  }
-}
-final case object District extends Granularity {
-  override def compare(that: Granularity): Int = that match {
-    case MeetingPoint => 1
-    case Room => 1
-    case Building => 1
-    case Park => 1
     case District => 0
     case City => -1
     case State => -1
@@ -102,12 +78,11 @@ final case object District extends Granularity {
     case World => -1
   }
 }
-final case object City extends Granularity {
+final case object City extends SpatialGranularity {
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 1
     case Room => 1
     case Building => 1
-    case Park => 1
     case District => 1
     case City => 0
     case State => -1
@@ -116,12 +91,11 @@ final case object City extends Granularity {
     case World => -1
   }
 }
-final case object State extends Granularity {
+final case object State extends SpatialGranularity {
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 1
     case Room => 1
     case Building => 1
-    case Park => 1
     case District => 1
     case City => 1
     case State => 0
@@ -130,12 +104,11 @@ final case object State extends Granularity {
     case World => -1
   }
 }
-final case object Country extends Granularity {
+final case object Country extends SpatialGranularity {
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 1
     case Room => 1
     case Building => 1
-    case Park => 1
     case District => 1
     case City => 1
     case State => 1
@@ -144,12 +117,11 @@ final case object Country extends Granularity {
     case World => -1
   }
 }
-final case object Continent extends Granularity {
+final case object Continent extends SpatialGranularity {
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 1
     case Room => 1
     case Building => 1
-    case Park => 1
     case District => 1
     case City => 1
     case State => 1
@@ -158,12 +130,11 @@ final case object Continent extends Granularity {
     case World => -1
   }
 }
-final case object World extends Granularity{
+final case object World extends SpatialGranularity{
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 1
     case Room => 1
     case Building => 1
-    case Park => 1
     case District => 1
     case City => 1
     case State => 1
