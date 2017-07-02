@@ -4,10 +4,8 @@ class GranularityTest extends FunSuite {
 
   test("meetingpoint granularity") {
     assert(MeetingPoint <= MeetingPoint)
-    assert(MeetingPoint <= Room)
-    assert(MeetingPoint <= Building)
-    assert(MeetingPoint < Neighbourhood)
-    assert(MeetingPoint < Park)
+    assert(MeetingPoint < Room)
+    assert(MeetingPoint < Building)
     assert(MeetingPoint < District)
     assert(MeetingPoint < City)
     assert(MeetingPoint < State)
@@ -19,8 +17,6 @@ class GranularityTest extends FunSuite {
     assert(City > MeetingPoint)
     assert(City > Room)
     assert(City > Building)
-    assert(City > Park)
-    assert(City > Neighbourhood)
     assert(City > District)
     assert(City <= City)
     assert(City < State)
@@ -29,15 +25,15 @@ class GranularityTest extends FunSuite {
   }
 
   test("coarsen"){
-    assert(Room.coarsen == Park)
+    assert(Room.coarsen == Building)
     assert(City.coarsen == State)
     assert(City.coarsen.coarsen == Country)
   }
 
   test("common granule"){
-    assert(Room.commonUpperGranule(Park) == Park)
+    assert(Room.commonUpperGranule(Building) == Building)
     assert(City.commonUpperGranule(State) == State)
-    assert(Room.commonUpperGranule(Building) == Park)
+    assert(Room.commonUpperGranule(Building) == Building)
   }
 
 }
