@@ -30,6 +30,7 @@ object Plan {
     override def endPlace: Place =  plan.sortBy(b => b.getEndTime).map(b => b.endPlace).reverse.head
     override def flatten: List[Plan] = plan.flatMap(b => b.flatten)
     override def Zero: Plan = ActivitySequence(List())
+    //TODO implement monoid methods properly
     override def op(t1:Plan,t2:Plan): Plan = (t1,t2) match {
       case (SingleActivity(activity1),SingleActivity(activity2)) => new ActivitySequence(List(SingleActivity(activity1),SingleActivity(activity2)))
       case (ActivitySequence(activities),SingleActivity(activity2)) => new ActivitySequence(List(ActivitySequence(activities),SingleActivity(activity2)))
