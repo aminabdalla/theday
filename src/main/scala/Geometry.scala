@@ -10,7 +10,7 @@ type GeomPoint = (Double,Double)
     val term2 = Math.pow((g2.toPointRepresentation._2 - this.toPointRepresentation._2),2)
     Math.sqrt(term1 + term2)
   }
-  def toPointRepresentation: GeomPoint= this match {
+  def toPointRepresentation: GeomPoint = this match {
     case Geometry.BBOX(ll,ur) => ( (ur._1 - ll._1)/2, (ur._2 - ll._2)/2)
     case Geometry.POINT(p) => p
   }

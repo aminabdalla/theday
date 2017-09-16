@@ -14,6 +14,7 @@ sealed abstract trait SpatialGranularity extends Granularity{
   override def coarsen : Granularity  = this match {
     case MeetingPoint => Room
     case Room => Building
+    case Building => District
     case District => City
     case City => State
     case State => Country
@@ -146,14 +147,11 @@ sealed abstract trait TemporalGranularity extends Granularity{
   def top : Granularity = Year
   def bottom : Granularity = Second
   override def coarsen : Granularity  = this match {
-    case MeetingPoint => Room
-    case Room => Building
-    case District => City
-    case City => State
-    case State => Country
-    case Country => Continent
-    case Continent => World
-    case World => World
+    case Second => Minute
+    case Minute => Hour
+    case Hour => Day
+    case Day => Month
+    case Month => Year
   }
 }
 
