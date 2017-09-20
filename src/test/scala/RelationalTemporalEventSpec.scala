@@ -8,7 +8,7 @@ import org.scalatest.junit.JUnitRunner
   * Created by amin on 19/03/2017.
   */
 @RunWith(classOf[JUnitRunner])
-class RelationalTemporalEventTest extends FunSuite {
+class RelationalTemporalEventSpec extends FunSuite {
 
   val eventFrom0_1 = new PlaceTimeStation(null,(0,1),null)
   val eventFrom0_2 = new PlaceTimeStation(null,(0,2),null)

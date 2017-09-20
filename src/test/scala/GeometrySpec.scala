@@ -1,6 +1,6 @@
 import org.scalatest.FunSuite
 
-class GeometryTest extends FunSuite {
+class GeometrySpec extends FunSuite {
 
   val point1 = Geometry.POINT(0,0)
   val point2 = Geometry.POINT(1,1)

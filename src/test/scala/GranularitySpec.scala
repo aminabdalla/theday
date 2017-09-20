@@ -1,6 +1,6 @@
 import org.scalatest.FunSuite
 
-class GranularityTest extends FunSuite {
+class GranularitySpec extends FunSuite {
 
   test("meetingpoint granularity") {
     assert(MeetingPoint <= MeetingPoint)

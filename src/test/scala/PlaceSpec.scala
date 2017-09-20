@@ -1,7 +1,7 @@
 import Geometry.POINT
 import org.scalatest.FunSuite
 
-class PlaceTest extends FunSuite {
+class PlaceSpec extends FunSuite {
 
   test("testIsParentOf") {
 
