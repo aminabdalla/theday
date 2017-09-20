@@ -6,14 +6,14 @@ import org.scalatest.{FlatSpec, FunSuite, Matchers}
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class BlockSpec extends FlatSpec with Matchers{
+class PlanSpec extends FlatSpec with Matchers{
 
   "A block" should "return the starttime and endtime of single static activities" in new Fixture {
     SingleActivity(staticActivityStartsAt0).getStartTime shouldEqual 0
     SingleActivity(staticActivityStartsAt0).getEndTime shouldEqual 2
   }
 
-  it should "return startime and endtime of a single moving activities" in new Fixture {
+  it should "return startime and endtime of a single moving activity" in new Fixture {
     SingleActivity(movingActivityStartsAt2).getStartTime shouldEqual 2
     SingleActivity(movingActivityStartsAt2).getEndTime shouldEqual 3
   }
