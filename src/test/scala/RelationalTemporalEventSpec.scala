@@ -1,5 +1,4 @@
-import Activity.PlaceTimeStation
-import org.scalatest.FunSuite
+import construct.Activity.PlaceTimeStation
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner

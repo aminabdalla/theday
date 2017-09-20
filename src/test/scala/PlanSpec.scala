@@ -1,12 +1,10 @@
-import Activity.{PlaceTimePath, PlaceTimeStation}
-import Geometry.POINT
-import Plan.{ActivitySequence, SingleActivity}
+import construct.Plan.SingleActivity
 import org.junit.runner.RunWith
-import org.scalatest.{FlatSpec, FunSuite, Matchers}
 import org.scalatest.junit.JUnitRunner
+import org.scalatest.{FlatSpec, Matchers}
 
 @RunWith(classOf[JUnitRunner])
-class PlanSpec extends FlatSpec with Matchers{
+class PlanSpec extends FlatSpec with Matchers {
 
   "A block" should "return the starttime and endtime of single static activities" in new Fixture {
     SingleActivity(staticActivityStartsAt0).getStartTime shouldEqual 0
@@ -47,7 +45,7 @@ class PlanSpec extends FlatSpec with Matchers{
     SingleActivityat2.before(SingleActivityat0) shouldBe false
     SingleActivityat0.before(overlappingSingleActivity) shouldBe false
     SingleActivityat0.before(coveringActivityStart0End5) shouldBe false
-    coveringActivityStart0End5.before(SingleActivityat0)shouldBe false
+    coveringActivityStart0End5.before(SingleActivityat0) shouldBe false
   }
 
   it should "check blocks of activities are parallel" in new Fixture {
@@ -61,7 +59,7 @@ class PlanSpec extends FlatSpec with Matchers{
   }
 
   it should "temporally project activities" in new Fixture {
-    unsortedSequenceOfActivities.temporalProjection shouldBe (0, 3)
+    unsortedSequenceOfActivities.temporalProjection shouldBe(0, 3)
   }
 
   it should "spatially project activities" in new Fixture {
@@ -73,6 +71,14 @@ class PlanSpec extends FlatSpec with Matchers{
   it should "check if activities are temporally contained" in new Fixture {
     attendingLecturesFrom1_4.during(goingToUniFrom0_5) shouldBe true
     attendingLecturesFrom1_4.during(singleActivityStart4End5) shouldBe false
+  }
+
+  it should "return the covering spatial granularity" in new Fixture{
+    fail
+  }
+
+  it should "return the covering temporal granularity" in new Fixture{
+    fail
   }
 
 }

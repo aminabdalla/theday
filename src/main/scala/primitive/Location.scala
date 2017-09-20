@@ -1,3 +1,5 @@
+package primitive
+
 
 
 class Location(var name: String, var geometry: Geometry) {

@@ -1,4 +1,6 @@
-import TemporalEvent.Interval
+package construct
+
+import construct.TemporalEvent.Interval
 
 trait TemporalEvent {
   def getTimeSpan : Interval = (this.getStartTime,this.getEndTime)

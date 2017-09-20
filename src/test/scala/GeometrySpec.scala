@@ -1,4 +1,5 @@
 import org.scalatest.FunSuite
+import primitive.Geometry
 
 class GeometrySpec extends FunSuite {
 

@@ -1,3 +1,7 @@
+package construct
+
+import primitive.Location
+
 sealed abstract trait Place{
   def isParentOf(p : Place) : Boolean
   def isChild(p : Place) : Boolean

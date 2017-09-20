@@ -1,4 +1,6 @@
-import TemporalEvent.Interval
+package construct
+
+import construct.TemporalEvent._
 
 abstract class Activity(var name: String, var timeSpan: Interval) extends RelationalTemporalEvent {
   def getPlaces: List[Place]

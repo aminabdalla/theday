@@ -1,4 +1,5 @@
 import org.scalatest.FunSuite
+import primitive._
 
 class GranularitySpec extends FunSuite {
 

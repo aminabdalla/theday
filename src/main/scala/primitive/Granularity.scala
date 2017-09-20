@@ -1,3 +1,5 @@
+package primitive
+
 sealed abstract trait Granularity extends Ordered[Granularity]{
 
   def coarsen : Granularity

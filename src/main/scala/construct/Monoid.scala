@@ -1,3 +1,5 @@
+package construct
+
 
 trait Monoid[T] {
   def Zero: T

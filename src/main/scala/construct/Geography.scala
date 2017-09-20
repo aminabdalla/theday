@@ -1,3 +1,6 @@
+package construct
+
+import primitive.Geometry
 
 trait Geography {
 

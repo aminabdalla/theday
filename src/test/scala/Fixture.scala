@@ -1,6 +1,8 @@
-import Activity.{PlaceTimePath, PlaceTimeStation}
-import Geometry.POINT
-import Plan.{ActivitySequence, SingleActivity}
+import construct.Activity.{PlaceTimePath, PlaceTimeStation}
+import construct.Plan.{ActivitySequence, SingleActivity}
+import construct.{Place, SubPlace, TopPlace}
+import primitive.Geometry.POINT
+import primitive.Location
 
 
 class Fixture {
