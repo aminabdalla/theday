@@ -1,12 +1,6 @@
 import construct.Activity.PlaceTimeStation
-import org.junit.runner.RunWith
 import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
 
-/**
-  * Created by amin on 19/03/2017.
-  */
-@RunWith(classOf[JUnitRunner])
 class RelationalTemporalEventSpec extends FunSuite {
 
   val eventFrom0_1 = new PlaceTimeStation(null,(0,1),null)

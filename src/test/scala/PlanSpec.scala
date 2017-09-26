@@ -1,9 +1,6 @@
 import construct.Plan.SingleActivity
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FlatSpec, Matchers}
 
-@RunWith(classOf[JUnitRunner])
 class PlanSpec extends FlatSpec with Matchers {
 
   "A block" should "return the starttime and endtime of single static activities" in new Fixture {

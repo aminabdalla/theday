@@ -1,7 +1,7 @@
 import construct.{SubPlace, TopPlace}
 import org.scalatest.FunSuite
 import primitive.Geometry.POINT
-import primitive.{Geometry, Location}
+import primitive.Location
 
 class PlaceSpec extends FunSuite {
 
