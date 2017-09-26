@@ -1,37 +1,22 @@
 import construct.{SubPlace, TopPlace}
-import org.scalatest.FunSuite
+import org.scalatest.{FlatSpec, FunSuite, Matchers}
 import primitive.Geometry.POINT
 import primitive.Location
 
-class PlaceSpec extends FunSuite {
+class PlaceSpec extends FlatSpec with Matchers {
 
-  test("testIsParentOf") {
 
-    val earthLoc: Location = Location("Earth", POINT(0, 0))
-    val europeLoc: Location = Location("Europe", POINT(0, 1))
-    val germanyLoc: Location = Location("Germany", POINT(0, 2))
-    val germany = SubPlace(loc = germanyLoc,List(null))
-    val europe = SubPlace(loc = europeLoc,List(germany))
-    val earth = TopPlace(loc = earthLoc,List(europe))
-
-    assert(earth.isParentOf(germany))
-    assert(earth.isParentOf(europe))
-    assert(europe.isParentOf(germany))
-
+  "A Place" should "return the parent" in new Fixture {
+    earth.isParentOf(germany) shouldBe true
+    earth.isParentOf(europe) shouldBe true
+    europe.isParentOf(germany) shouldBe true
   }
 
-  test("testChildPlaces") {
-    val earthLoc: Location = Location("Earth", POINT(0, 0))
-    val europeLoc: Location = Location("Europe", POINT(0, 1))
-    val germanyLoc: Location = Location("Germany", POINT(0, 2))
-    val franceLoc: Location = Location("France", POINT(0, 2))
-    val france = SubPlace(loc = franceLoc,List())
-    val germany = SubPlace(loc = germanyLoc,List())
-    val europe = SubPlace(loc = europeLoc,List(germany))
-    val earth = TopPlace(loc = earthLoc,List(europe))
-    assert(germany.isChild(europe))
-    assert(germany.isChild(earth))
-    assert(!germany.isChild(france))
+  it should "return true if another place is a child" in new Fixture {
+    germany.isChild(europe) shouldBe true
+    germany.isChild(earth) shouldBe true
+    germany.isChild(france) shouldBe false
+    earth.isChild(germany) shouldBe false
   }
 
 

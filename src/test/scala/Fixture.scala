@@ -10,6 +10,7 @@ class Fixture {
   val earthLoc: Location = Location("Earth", POINT(0, 0))
   val europeLoc: Location = Location("Europe", POINT(0, 1))
   val germanyLoc: Location = Location("Germany", POINT(0, 2))
+  val franceLoc: Location = Location("France", POINT(0, 2))
   val ukLoc: Location = Location("UK", POINT(0, 3))
   val londonLoc: Location = Location("London", POINT(0, 4))
   val cinemaLoc: Location = Location("Cinema", POINT(4, 5))
@@ -17,19 +18,21 @@ class Fixture {
   val homeLoc: Location = Location("Home", POINT(0, 2))
   val supermarketLoc: Location = Location("Supermarket", POINT(1, 1))
   val workLoc: Location = Location("Work", POINT(0, 5))
-  val zooLoc: Location = Location("Zoo", POINT(2, 3))
 
+  val zooLoc: Location = Location("Zoo", POINT(2, 3))
   val workPlace: Place = SubPlace(workLoc,List())
   val uniPlace: Place = SubPlace(uniLoc,List())
   val homePlace: Place = SubPlace(homeLoc,List())
   val cinemaPlace: Place = SubPlace(cinemaLoc,List())
   val supermarketPlace: Place = SubPlace(supermarketLoc,List())
+
   val zooPlace: Place = SubPlace(zooLoc,List())
 
   val london: Place = SubPlace(londonLoc,List(workPlace,uniPlace,homePlace,cinemaPlace,supermarketPlace,zooPlace))
-  val earth = TopPlace(loc = earthLoc,List(europe))
   val germany = SubPlace(loc = germanyLoc,List())
-  val europe = SubPlace(loc = europeLoc,List(germany))
+  val france = SubPlace(loc = franceLoc,List())
+  val europe = SubPlace(loc = europeLoc,List(germany,france))
+  val earth = TopPlace(loc = earthLoc,List(europe))
 
   val singleActivityStart4End5 = SingleActivity(PlaceTimeStation(cinemaPlace,(4,5),""))
   val coveringActivityStart0End5 = SingleActivity(PlaceTimeStation(workPlace,(0,5),""))

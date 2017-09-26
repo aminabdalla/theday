@@ -3,7 +3,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class PlanSpec extends FlatSpec with Matchers {
 
-  "A block" should "return the starttime and endtime of single static activities" in new Fixture {
+  "A plan" should "return the starttime and endtime of single static activities" in new Fixture {
     SingleActivity(staticActivityStartsAt0).getStartTime shouldEqual 0
     SingleActivity(staticActivityStartsAt0).getEndTime shouldEqual 2
   }
