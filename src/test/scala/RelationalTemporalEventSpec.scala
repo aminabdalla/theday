@@ -3,15 +3,15 @@ import org.scalatest.FunSuite
 
 class RelationalTemporalEventSpec extends FunSuite {
 
-  val eventFrom0_1 = new PlaceTimeStation(null,(0,1),null)
-  val eventFrom0_2 = new PlaceTimeStation(null,(0,2),null)
-  val eventFrom0_3 = new PlaceTimeStation(null,(0,3),null)
-  val eventFrom1_2 = new PlaceTimeStation(null,(1,2),null)
-  val eventFrom1_3 = new PlaceTimeStation(null,(1,3),null)
-  val eventFrom2_3 = new PlaceTimeStation(null,(2,3),null)
-  val eventFrom2_4 = new PlaceTimeStation(null,(2,4),null)
-  val eventFrom3_4 = new PlaceTimeStation(null,(3,4),null)
-  val eventFrom0_4 = new PlaceTimeStation(null,(0,4),null)
+  val eventFrom0_1 = new PlaceTimeStation(null, (0, 1), null)
+  val eventFrom0_2 = new PlaceTimeStation(null, (0, 2), null)
+  val eventFrom0_3 = new PlaceTimeStation(null, (0, 3), null)
+  val eventFrom1_2 = new PlaceTimeStation(null, (1, 2), null)
+  val eventFrom1_3 = new PlaceTimeStation(null, (1, 3), null)
+  val eventFrom2_3 = new PlaceTimeStation(null, (2, 3), null)
+  val eventFrom2_4 = new PlaceTimeStation(null, (2, 4), null)
+  val eventFrom3_4 = new PlaceTimeStation(null, (3, 4), null)
+  val eventFrom0_4 = new PlaceTimeStation(null, (0, 4), null)
 
   test("\"(0,2) starts (0,3)\"")(assert(eventFrom0_2.starts(eventFrom0_3)))
   test("\"(0,2) does not start (0,1)\"")(assert(!eventFrom0_2.starts(eventFrom0_1)))
@@ -31,7 +31,7 @@ class RelationalTemporalEventSpec extends FunSuite {
   test("\"(1,2) is equal (1,2)\"")(assert(eventFrom1_2.equal(eventFrom1_2)))
   test("\"(0,4) is not equal (1,2)\"")(assert(!eventFrom0_4.during(eventFrom1_2)))
 
-  test("\"(1,2) meets (2,3)\"")(assert(eventFrom1_2.meets(eventFrom2_3) ))
+  test("\"(1,2) meets (2,3)\"")(assert(eventFrom1_2.meets(eventFrom2_3)))
   test("\"(1,2) does not meet (3,4)\"")(assert(!eventFrom1_2.meets(eventFrom3_4)))
 
   test("\"(3,4) is met by (2,3)\"")(assert(eventFrom3_4.metBy(eventFrom2_3)))

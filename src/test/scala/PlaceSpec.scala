@@ -1,7 +1,4 @@
-import construct.{SubPlace, TopPlace}
-import org.scalatest.{FlatSpec, FunSuite, Matchers}
-import primitive.Geometry.POINT
-import primitive.Location
+import org.scalatest.{FlatSpec, Matchers}
 
 class PlaceSpec extends FlatSpec with Matchers {
 
