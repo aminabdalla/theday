@@ -1,5 +1,6 @@
 package construct
 
+import cats.kernel.Monoid
 
 sealed trait Plan extends Monoid[Plan] with RelationalTemporalEvent{
   type Time = Int
@@ -19,8 +20,8 @@ object Plan {
     override def startPlace: Place = activity.getStartPlace
     override def endPlace: Place = activity.getEndPlace
     override def flatten: List[Plan] = List(SingleActivity(activity))
-    override def Zero: Plan = SingleActivity(null)
-    override def op(t1:Plan,t2:Plan): Plan = ActivitySequence(List(t1,t2))
+    override def empty: Plan = SingleActivity(null)
+    override def combine(t1:Plan,t2:Plan): Plan = ActivitySequence(List(t1,t2))
     override def placeProjection: List[Place] = activity.getPlaces
   }
 
@@ -30,9 +31,9 @@ object Plan {
     override def startPlace: Place = plan.sortBy(b => b.getStartTime).map(b => b.startPlace).head
     override def endPlace: Place =  plan.sortBy(b => b.getEndTime).map(b => b.endPlace).reverse.head
     override def flatten: List[Plan] = plan.flatMap(b => b.flatten)
-    override def Zero: Plan = ActivitySequence(List())
+    override def empty: Plan = ActivitySequence(List())
     //TODO implement monoid methods properly
-    override def op(t1:Plan,t2:Plan): Plan = (t1,t2) match {
+    override def combine(t1:Plan,t2:Plan): Plan = (t1,t2) match {
       case (SingleActivity(activity1),SingleActivity(activity2)) => new ActivitySequence(List(SingleActivity(activity1),SingleActivity(activity2)))
       case (ActivitySequence(activities),SingleActivity(activity2)) => new ActivitySequence(List(ActivitySequence(activities),SingleActivity(activity2)))
       case (ActivitySequence(activities),ActivitySequence(activity2)) => new ActivitySequence(List(ActivitySequence(activities),ActivitySequence(activities)))

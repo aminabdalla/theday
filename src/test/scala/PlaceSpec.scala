@@ -16,5 +16,4 @@ class PlaceSpec extends FlatSpec with Matchers {
     earth.isChild(germany) shouldBe false
   }
 
-
 }

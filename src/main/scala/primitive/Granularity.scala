@@ -1,19 +1,21 @@
 package primitive
 
-sealed abstract trait Granularity extends Ordered[Granularity]{
+sealed abstract trait Granularity extends Ordered[Granularity] {
 
-  def coarsen : Granularity
+  def coarsen: Granularity
 
-  def commonUpperGranule(g : Granularity) : Granularity=
+  def commonUpperGranule(g: Granularity): Granularity =
     if (this < g) g
-    else if(this > g) this
+    else if (this > g) this
     else this.coarsen
 }
 
-sealed abstract trait SpatialGranularity extends Granularity{
-  def top : Granularity = World
-  def bottom : Granularity = Room
-  override def coarsen : Granularity  = this match {
+sealed trait SpatialGranularity extends Granularity {
+  def top: Granularity = World
+
+  def bottom: Granularity = Room
+
+  override def coarsen: Granularity = this match {
     case MeetingPoint => Room
     case Room => Building
     case Building => District
@@ -26,7 +28,7 @@ sealed abstract trait SpatialGranularity extends Granularity{
   }
 }
 
-final case object MeetingPoint extends SpatialGranularity{
+final case object MeetingPoint extends SpatialGranularity {
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 0
     case Room => -1
@@ -39,6 +41,7 @@ final case object MeetingPoint extends SpatialGranularity{
     case World => -1
   }
 }
+
 final case object Room extends SpatialGranularity {
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 1
@@ -52,6 +55,7 @@ final case object Room extends SpatialGranularity {
     case World => -1
   }
 }
+
 final case object Building extends SpatialGranularity {
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 1
@@ -79,6 +83,7 @@ final case object District extends SpatialGranularity {
     case World => -1
   }
 }
+
 final case object City extends SpatialGranularity {
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 1
@@ -92,6 +97,7 @@ final case object City extends SpatialGranularity {
     case World => -1
   }
 }
+
 final case object State extends SpatialGranularity {
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 1
@@ -105,6 +111,7 @@ final case object State extends SpatialGranularity {
     case World => -1
   }
 }
+
 final case object Country extends SpatialGranularity {
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 1
@@ -118,6 +125,7 @@ final case object Country extends SpatialGranularity {
     case World => -1
   }
 }
+
 final case object Continent extends SpatialGranularity {
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 1
@@ -131,7 +139,8 @@ final case object Continent extends SpatialGranularity {
     case World => -1
   }
 }
-final case object World extends SpatialGranularity{
+
+final case object World extends SpatialGranularity {
   override def compare(that: Granularity): Int = that match {
     case MeetingPoint => 1
     case Room => 1
@@ -145,10 +154,12 @@ final case object World extends SpatialGranularity{
   }
 }
 
-sealed abstract trait TemporalGranularity extends Granularity{
-  def top : Granularity = Year
-  def bottom : Granularity = Second
-  override def coarsen : Granularity  = this match {
+sealed abstract trait TemporalGranularity extends Granularity {
+  def top: Granularity = Year
+
+  def bottom: Granularity = Second
+
+  override def coarsen: Granularity = this match {
     case Second => Minute
     case Minute => Hour
     case Hour => Day
@@ -157,7 +168,7 @@ sealed abstract trait TemporalGranularity extends Granularity{
   }
 }
 
-final case object Second extends TemporalGranularity{
+final case object Second extends TemporalGranularity {
   override def compare(that: Granularity): Int = that match {
     case Second => 0
     case Minute => 1
@@ -168,7 +179,7 @@ final case object Second extends TemporalGranularity{
   }
 }
 
-final case object Minute extends TemporalGranularity{
+final case object Minute extends TemporalGranularity {
   override def compare(that: Granularity): Int = that match {
     case Second => -1
     case Minute => 0
@@ -179,7 +190,7 @@ final case object Minute extends TemporalGranularity{
   }
 }
 
-final case object Hour extends TemporalGranularity{
+final case object Hour extends TemporalGranularity {
   override def compare(that: Granularity): Int = that match {
     case Second => -1
     case Minute => -1
@@ -190,7 +201,7 @@ final case object Hour extends TemporalGranularity{
   }
 }
 
-final case object Day extends TemporalGranularity{
+final case object Day extends TemporalGranularity {
   override def compare(that: Granularity): Int = that match {
     case Second => -1
     case Minute => -1
@@ -201,7 +212,7 @@ final case object Day extends TemporalGranularity{
   }
 }
 
-final case object Month extends TemporalGranularity{
+final case object Month extends TemporalGranularity {
   override def compare(that: Granularity): Int = that match {
     case Second => -1
     case Minute => -1
@@ -212,7 +223,7 @@ final case object Month extends TemporalGranularity{
   }
 }
 
-final case object Year extends TemporalGranularity{
+final case object Year extends TemporalGranularity {
   override def compare(that: Granularity): Int = that match {
     case Second => -1
     case Minute => -1

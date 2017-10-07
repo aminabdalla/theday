@@ -1,27 +1,18 @@
 package construct
 
+import abstracts.Hierarchy
 import primitive.Geometry
 
-trait Geography {
+class Geography(implicit geog : Hierarchy[Place]) {
 
-  def spatiallyContains(p1 : Place, p2:Place) : Boolean
-  def transportDistance(p1 : Place, p2:Place) : Double
-  def euclideanDistance(p1 : Place, p2:Place): Double
-  def travelTime(p1 : Place, p2:Place) : Double
-  def geomRepresentation(p : Place): Geometry
-  implicit def toGeom(p:Place) : Geometry = p.getLocation.geometry
+  def spatiallyContains(p1: Place, p2: Place): Boolean = ???
 
-}
+  def transportDistance(p1: Place, p2: Place): Double = euclideanDistance(p1, p2) * 1.5
 
+  def euclideanDistance(p1: Place, p2: Place): Double = p1.euclideanDistance(p2)
 
-object Geography extends Geography{
-  override def spatiallyContains(p1: Place, p2: Place): Boolean = ???
+  def travelTime(p1: Place, p2: Place): Double = euclideanDistance(p1, p2) * 2
 
-  override def geomRepresentation(p: Place): Geometry = p
+  implicit def toGeom(p: Place): Geometry = p.getLocation.geometry
 
-  override def euclideanDistance(p1: Place, p2: Place): Double = p1.euclideanDistance(p2)
-
-  override def travelTime(p1: Place, p2: Place): Double = euclideanDistance(p1,p2) * 2
-
-  override def transportDistance(p1: Place, p2: Place): Double =  euclideanDistance(p1,p2) * 1.5
 }

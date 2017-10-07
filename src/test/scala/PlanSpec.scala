@@ -70,11 +70,13 @@ class PlanSpec extends FlatSpec with Matchers {
     attendingLecturesFrom1_4.during(singleActivityStart4End5) shouldBe false
   }
 
-  it should "return the covering spatial granularity" in new Fixture{
+  it should "return the covering spatial granularity of multiple activities" in new Fixture {
+//    sequenceOfActivities.containingPlace shouldBe london
+//    sequenceWithTravel.containingPlace shouldBe europe
     fail
   }
 
-  it should "return the covering temporal granularity" in new Fixture{
+  it should "return the covering temporal granularity" in new Fixture {
     fail
   }
 

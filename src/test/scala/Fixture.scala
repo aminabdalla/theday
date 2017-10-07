@@ -1,8 +1,9 @@
+import cats.data.NonEmptyList
 import construct.Activity.{PlaceTimePath, PlaceTimeStation}
 import construct.Plan.{ActivitySequence, SingleActivity}
 import construct.{Place, SubPlace, TopPlace}
 import primitive.Geometry.POINT
-import primitive.Location
+import primitive._
 
 
 class Fixture {
@@ -20,30 +21,32 @@ class Fixture {
   val workLoc: Location = Location("Work", POINT(0, 5))
 
   val zooLoc: Location = Location("Zoo", POINT(2, 3))
-  val workPlace: Place = SubPlace(workLoc,List())
-  val uniPlace: Place = SubPlace(uniLoc,List())
-  val homePlace: Place = SubPlace(homeLoc,List())
-  val cinemaPlace: Place = SubPlace(cinemaLoc,List())
-  val supermarketPlace: Place = SubPlace(supermarketLoc,List())
+  val workPlace: Place = SubPlace(workLoc,List(),Room)
+  val uniPlace: Place = SubPlace(uniLoc,List(),Building)
+  val homePlace: Place = SubPlace(homeLoc,List(),Building)
+  val cinemaPlace: Place = SubPlace(cinemaLoc,List(),Building)
+  val supermarketPlace: Place = SubPlace(supermarketLoc,List(),Building)
 
-  val zooPlace: Place = SubPlace(zooLoc,List())
+  val zooPlace: Place = SubPlace(zooLoc,List(),Building)
 
-  val london: Place = SubPlace(londonLoc,List(workPlace,uniPlace,homePlace,cinemaPlace,supermarketPlace,zooPlace))
-  val germany = SubPlace(loc = germanyLoc,List())
-  val france = SubPlace(loc = franceLoc,List())
-  val europe = SubPlace(loc = europeLoc,List(germany,france))
-  val earth = TopPlace(loc = earthLoc,List(europe))
+  val london: Place = SubPlace(londonLoc,List(workPlace,uniPlace,homePlace,cinemaPlace,supermarketPlace,zooPlace),City)
+  val germany = SubPlace(loc = germanyLoc,List(),Country)
+  val france = SubPlace(loc = franceLoc,List(),Country)
+  val europe = SubPlace(loc = europeLoc,List(germany,france),Continent)
+  val earth = TopPlace(loc = earthLoc,NonEmptyList.of(europe),World)
 
   val singleActivityStart4End5 = SingleActivity(PlaceTimeStation(cinemaPlace,(4,5),""))
   val coveringActivityStart0End5 = SingleActivity(PlaceTimeStation(workPlace,(0,5),""))
   val staticActivityStartsAt0 = PlaceTimeStation( homePlace,(0,2),"")
   val stayingAtHomeFrom2 = PlaceTimeStation( homePlace,(2,3),"")
   val movingActivityStartsAt2 = PlaceTimePath( supermarketPlace, zooPlace,(2,3),"")
+  val movingActivityWithTravel = PlaceTimePath( homePlace, france,(5,8),"")
   val overlappingActivity = PlaceTimeStation( uniPlace,(0,2),"")
   val overlappingSingleActivity = SingleActivity(overlappingActivity)
   val SingleActivityat0 = SingleActivity(staticActivityStartsAt0)
   val SingleActivityat4 = SingleActivity(movingActivityStartsAt2)
   val SingleActivityat2 = SingleActivity(movingActivityStartsAt2)
+  val sequenceWithTravel = ActivitySequence(List(SingleActivity(staticActivityStartsAt0),SingleActivity(movingActivityStartsAt2),SingleActivity(movingActivityWithTravel)))
   val sequenceOfActivities = ActivitySequence(List(SingleActivity(staticActivityStartsAt0),SingleActivity(movingActivityStartsAt2)))
   val stayingAtHomePlan = ActivitySequence(List(SingleActivity(staticActivityStartsAt0),SingleActivity(stayingAtHomeFrom2)))
   val unsortedSequenceOfActivities = ActivitySequence(List(SingleActivity(movingActivityStartsAt2),SingleActivity(staticActivityStartsAt0)))
