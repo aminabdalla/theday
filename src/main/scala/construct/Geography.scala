@@ -5,7 +5,7 @@ import primitive.Geometry
 
 class Geography(implicit geog : Hierarchy[Place]) {
 
-  def spatiallyContains(p1: Place, p2: Place): Boolean = ???
+  def contains(p1: Place, p2: Place): Boolean = geog.subHierarchy(p1).flatMap(sH => sH.subHierarchy(p2)).isDefined
 
   def transportDistance(p1: Place, p2: Place): Double = euclideanDistance(p1, p2) * 1.5
 
@@ -13,6 +13,6 @@ class Geography(implicit geog : Hierarchy[Place]) {
 
   def travelTime(p1: Place, p2: Place): Double = euclideanDistance(p1, p2) * 2
 
-  implicit def toGeom(p: Place): Geometry = p.getLocation.geometry
+  implicit def toGeom(p: Place): Geometry = p.location.geometry
 
 }

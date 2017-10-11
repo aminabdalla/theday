@@ -22,19 +22,19 @@ class PlanSpec extends FlatSpec with Matchers {
 
   it should "return start and end place of single static activity" in new Fixture {
     unsortedSequenceOfActivities.getStartTime shouldBe 0
-    SingleActivity(staticActivityStartsAt0).endPlace.getLocation.name shouldBe "Home"
+    SingleActivity(staticActivityStartsAt0).endPlace.name shouldBe "Home"
   }
 
   it should "return start and end place of single moving activity" in new Fixture {
-    SingleActivity(movingActivityStartsAt2).startPlace.getLocation.name shouldBe "Supermarket"
-    SingleActivity(movingActivityStartsAt2).endPlace.getLocation.name shouldBe "Zoo"
+    SingleActivity(movingActivityStartsAt2).startPlace.name shouldBe "Supermarket"
+    SingleActivity(movingActivityStartsAt2).endPlace.name shouldBe "Zoo"
   }
 
   it should "return start and end place of sorted and unsorted sequence of activities" in new Fixture {
-    SingleActivity(movingActivityStartsAt2).endPlace.getLocation.name shouldBe "Zoo"
-    unsortedSequenceOfActivities.startPlace.getLocation.name shouldBe "Home"
-    sequenceOfActivities.endPlace.getLocation.name shouldBe "Zoo"
-    unsortedSequenceOfActivities.endPlace.getLocation.name shouldBe "Zoo"
+    SingleActivity(movingActivityStartsAt2).endPlace.name shouldBe "Zoo"
+    unsortedSequenceOfActivities.startPlace.name shouldBe "Home"
+    sequenceOfActivities.endPlace.name shouldBe "Zoo"
+    unsortedSequenceOfActivities.endPlace.name shouldBe "Zoo"
   }
 
   it should "check if blocks of activities are before others" in new Fixture {
@@ -60,8 +60,8 @@ class PlanSpec extends FlatSpec with Matchers {
   }
 
   it should "spatially project activities" in new Fixture {
-    unsortedSequenceOfActivities.placeProjection.exists(a => List("Zoo", "Supermarket", "Home").contains(a.getLocation.name)) shouldBe true
-    stayingAtHomePlan.placeProjection.map(p => p.getLocation.name).contains("Home") shouldBe true
+    unsortedSequenceOfActivities.placeProjection.exists(a => List("Zoo", "Supermarket", "Home").contains(a.name)) shouldBe true
+    stayingAtHomePlan.placeProjection.map(p => p.name).contains("Home") shouldBe true
     stayingAtHomePlan.placeProjection.size shouldBe 1
   }
 
