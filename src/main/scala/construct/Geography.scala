@@ -3,7 +3,7 @@ package construct
 import abstracts.Hierarchy
 import primitive.Geometry
 
-class Geography(implicit geog: Hierarchy[Place]) {
+class Geography(geog: Hierarchy[Place]) {
 
   def contains(p1: Place, p2: Place): Boolean = geog.subHierarchy(p1).flatMap(sH => sH.subHierarchy(p2)).isDefined
 

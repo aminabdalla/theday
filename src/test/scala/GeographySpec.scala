@@ -1,26 +1,22 @@
-package construct
+import construct.Geography
 
-import abstracts.Fixture
-import org.scalatest.{FlatSpec, Matchers}
-
-class GeographySpec extends FlatSpec with Matchers {
+class GeographySpec extends BaseTest {
 
 
-  "contains()" should "return true if place is contained within other" in new Fixture {
+  "contains()" should "return true if place is contained within other" in {
 
-    implicit val hierarchy = world
-    val geography = new Geography()
+    val geography = new Geography(world)
 
     geography.contains(londonPlace, hounslowPlace) shouldBe true
     geography.contains(hounslowPlace, londonPlace) shouldBe false
     geography.contains(worldPlace, londonPlace) shouldBe true
+    geography.contains(europePlace,uniPlace) shouldBe true
 
   }
 
-  "isImmediateParent()" should "return true if place is parent of another other" in new Fixture {
+  "isImmediateParent()" should "return true if place is parent of another other" in {
 
-    implicit val hierarchy = world
-    val geography = new Geography()
+    val geography = new Geography(world)
 
     geography.isImmediateParent(londonPlace, hounslowPlace) shouldBe true
     geography.isImmediateParent(hounslowPlace, londonPlace) shouldBe false
@@ -29,10 +25,9 @@ class GeographySpec extends FlatSpec with Matchers {
 
   }
 
-  "getParent()" should "returns parent place" in new Fixture {
+  "getParent()" should "returns parent place" in  {
 
-    implicit val hierarchy = world
-    val geography = new Geography()
+    val geography = new Geography(world)
 
     geography.getParent(londonPlace) shouldBe Some(ukPlace)
     geography.getParent(ukPlace) shouldBe Some(worldPlace)
@@ -41,13 +36,13 @@ class GeographySpec extends FlatSpec with Matchers {
 
   }
 
-  "containingPlace()" should "return the smallest granular place containing all the other places" in new Fixture {
-    implicit val hierarchy = world
-    val geography = new Geography()
+  "containingPlace()" should "return the smallest granular place containing all the other places" in {
+    val geography = new Geography(world)
 
-    geography.containingPlace(List(hounslowPlace,londonPlace,parisPlace,viennaPlace)) shouldBe worldPlace
-    geography.containingPlace(List(hounslowPlace,donaustadtPlace)) shouldBe worldPlace
-    geography.containingPlace(List(francePlace,donaustadtPlace,londonPlace)) shouldBe worldPlace
+    geography.containingPlace(List(hounslowPlace,londonPlace,parisPlace,viennaPlace)) shouldBe europePlace
+    geography.containingPlace(List(hounslowPlace,donaustadtPlace)) shouldBe europePlace
+    geography.containingPlace(List(francePlace,donaustadtPlace,londonPlace,europePlace)) shouldBe europePlace
+    geography.containingPlace(List(uniPlace,hounslowPlace)) shouldBe londonPlace
 
   }
 
