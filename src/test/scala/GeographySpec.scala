@@ -30,7 +30,7 @@ class GeographySpec extends BaseTest {
     val geography = new Geography(world)
 
     geography.getParent(londonPlace) shouldBe Some(ukPlace)
-    geography.getParent(ukPlace) shouldBe Some(worldPlace)
+    geography.getParent(ukPlace) shouldBe Some(europePlace)
     geography.getParent(viennaPlace) shouldBe Some(austriaPlace)
     geography.getParent(worldPlace) shouldBe Some(worldPlace)
 

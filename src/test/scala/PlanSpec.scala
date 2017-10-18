@@ -1,4 +1,4 @@
-
+import construct.Plan.SingleActivity
 
 class PlanSpec extends BaseTest {
 
