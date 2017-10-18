@@ -1,5 +1,4 @@
 import abstracts.Node
-import cats.data.NonEmptyList
 import construct.Activity.{PlaceTimePath, PlaceTimeStation}
 import construct.Plan.{ActivitySequence, SingleActivity}
 import construct._
@@ -22,20 +21,42 @@ class Fixture {
   val workPlace = Place("Work", POINT(0, 5), Building)
   val zooPlace = Place("Zoo", POINT(2, 3), Building)
 
-  val workNode = Node(workPlace, List(),londonPlace)
-  val uniNode = Node(uniPlace, List(),londonPlace)
-  val homeNode = Node(homePlace, List(),londonPlace)
-  val cinemaNode = Node(cinemaPlace, List(),londonPlace)
-  val supermarketNode = Node(supermarketPlace, List(),londonPlace)
-  val zooNode = Node(zooPlace, List(),londonPlace)
+  val hounslowPlace = Place("Hounslow", Geometry.POINT(1, 1), District)
+  val donaustadtPlace = Place("Donaustadt", Geometry.POINT(1, 1), District)
+  val viennaPlace = Place("Vienna", Geometry.POINT(1, 1), City)
+  val austriaPlace = Place("Austria", Geometry.POINT(1, 1), Country)
+  val edinburghPlace = Place("Edinburgh", Geometry.POINT(1, 1), Country)
+  //  val londonPlace = Place("London", Geometry.POINT(1, 1), City)
+  val parisPlace = Place("Paris", Geometry.POINT(1, 1), City)
+  //  val francePlace = Place("France", Geometry.POINT(1, 1), Country)
+  //  val ukPlace = Place("UK", Geometry.POINT(1, 1), Country)
+  val worldPlace = Place("World", Geometry.POINT(1, 1), World)
 
-  val london = Node(londonPlace, List(workNode, uniNode, homeNode, cinemaNode, supermarketNode, zooNode),ukPlace)
-  val germany = Node(germanyPlace, List(),europePlace)
-  val france = Node(francePlace, List(),europePlace)
-  val europe = Node(europePlace, List(germany, france),europePlace)
-  implicit val earth = Node(earthPlace, List(europe),workPlace)
+  val hounslow = Node(hounslowPlace, List.empty, londonPlace)
+  val donaustadt = Node(donaustadtPlace, List.empty, viennaPlace)
+  val vienna = Node(viennaPlace, List(donaustadt), austriaPlace)
+  val austria = Node(austriaPlace, List(vienna), worldPlace)
+  val edinburgh = Node(edinburghPlace, List.empty, ukPlace)
+  //  val london = Node(londonPlace, List(hounslow), ukPlace)
+  val paris = Node(parisPlace, List.empty, francePlace)
+  //  val france = Node(francePlace, List(paris), worldPlace)
+  val uk = Node(ukPlace, List(london, edinburgh), worldPlace)
+//  val world = Node(worldPlace, List(uk, france, austria), worldPlace)
 
-  val geog = new Geography
+  val workNode = Node(workPlace, List(), londonPlace)
+  val uniNode = Node(uniPlace, List(), londonPlace)
+  val homeNode = Node(homePlace, List(), londonPlace)
+  val cinemaNode = Node(cinemaPlace, List(), londonPlace)
+  val supermarketNode = Node(supermarketPlace, List(), londonPlace)
+  val zooNode = Node(zooPlace, List(), londonPlace)
+
+  val london = Node(londonPlace, List(hounslow, workNode, uniNode, homeNode, cinemaNode, supermarketNode, zooNode), ukPlace)
+  val germany = Node(germanyPlace, List(), europePlace)
+  val france = Node(francePlace, List(paris), europePlace)
+  val europe = Node(europePlace, List(germany, france, uk, austria), europePlace)
+  val world = Node(earthPlace, List(europe), worldPlace)
+
+  val geog = new Geography(world)
 
   val singleActivityStart4End5 = SingleActivity(PlaceTimeStation(cinemaPlace, (4, 5), ""))
   val coveringActivityStart0End5 = SingleActivity(PlaceTimeStation(workPlace, (0, 5), ""))
