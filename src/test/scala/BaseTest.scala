@@ -60,9 +60,9 @@ trait BaseTest extends FlatSpec with Matchers {
 
   val singleActivityStart4End5 = SingleActivity(PlaceTimeStation(cinemaPlace, (4, 5), ""))
   val coveringActivityStart0End5 = SingleActivity(PlaceTimeStation(workPlace, (0, 5), ""))
-  val staticActivityStartsAt0 = PlaceTimeStation(homePlace, (0, 2), "")
+  val staticActivityStartsAt0 = PlaceTimeStation(homePlace, (0, 2), "home")
   val stayingAtHomeFrom2 = PlaceTimeStation(homePlace, (2, 3), "")
-  val movingActivityStartsAt2 = PlaceTimePath(supermarketPlace, zooPlace, (2, 3), "")
+  val movingActivityStartsAt2 = PlaceTimePath(supermarketPlace, zooPlace, (2, 3), "supermarket to zoo")
   val movingActivityWithTravel = PlaceTimePath(homePlace, francePlace, (5, 8), "")
   val overlappingActivity = PlaceTimeStation(uniPlace, (0, 2), "")
   val overlappingSingleActivity = SingleActivity(overlappingActivity)

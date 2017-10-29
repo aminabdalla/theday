@@ -1,4 +1,8 @@
-import construct.Plan.SingleActivity
+import construct.Activity.{PlaceTimePath, PlaceTimeStation}
+import construct.{Place, Plan}
+import construct.Plan.{ActivitySequence, SingleActivity}
+import primitive.Building
+import primitive.Geometry.POINT
 
 class PlanSpec extends BaseTest {
 
@@ -67,6 +71,39 @@ class PlanSpec extends BaseTest {
   it should "check if activities are temporally contained" in {
     attendingLecturesFrom1_4.during(goingToUniFrom0_5) shouldBe true
     attendingLecturesFrom1_4.during(singleActivityStart4End5) shouldBe false
+  }
+
+  it should "returns a coarsened plan that covers the initial one" in {
+    implicit val geo = geog
+    val expectedResultActivity = SingleActivity(PlaceTimeStation(londonPlace,(0,3),"supermarket to zoo,home"))
+    unsortedSequenceOfActivities.coarsen shouldBe expectedResultActivity
+  }
+
+  it should "combine to sequential single activities in the right order" in {
+    val singleActivityFirst = SingleActivity(PlaceTimeStation(homePlace, (0, 2), "home"))
+    val singleActivitySecond = SingleActivity(PlaceTimeStation(cinemaPlace, (3, 4), "cinema"))
+
+    val combinedResult = new ActivitySequence(List(singleActivityFirst,singleActivitySecond))
+
+    singleActivityFirst.combine(singleActivityFirst) shouldBe singleActivityFirst
+    singleActivitySecond.combine(singleActivityFirst) shouldBe combinedResult
+    singleActivityFirst.combine(singleActivitySecond) shouldBe singleActivitySecond.combine(singleActivityFirst)
+  }
+
+  it should "combine single and sequence activities in the right order" in {
+    val singleActivityFirst = SingleActivity(PlaceTimeStation(homePlace, (0, 2), "home"))
+    val singleActivityInTheMiddle = SingleActivity(PlaceTimePath(homePlace,cinemaPlace, (0, 2), "travel"))
+    val singleActivitySecond = SingleActivity(PlaceTimeStation(cinemaPlace, (3, 4), "cinema"))
+
+    val activitySequence = singleActivityFirst.combine(singleActivitySecond)
+
+    val combinedResult = new ActivitySequence(List(singleActivityFirst,singleActivityInTheMiddle,singleActivitySecond))
+
+    activitySequence.combine(activitySequence) shouldBe activitySequence
+    activitySequence.combine(singleActivityInTheMiddle) shouldBe combinedResult
+    singleActivityInTheMiddle.combine(activitySequence) shouldBe combinedResult
+    singleActivityInTheMiddle.combine(activitySequence) shouldBe activitySequence.combine(singleActivityInTheMiddle)
+
   }
 
 }
