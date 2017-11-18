@@ -1,6 +1,6 @@
-package construct
+package com.sila.theday.abstracts.construct
 
-import construct.TemporalEvent._
+import com.sila.theday.abstracts.construct.TemporalEvent._
 
 abstract class Activity(var name: String, var timeSpan: Interval) extends RelationalTemporalEvent {
   def getPlaces: List[Place]

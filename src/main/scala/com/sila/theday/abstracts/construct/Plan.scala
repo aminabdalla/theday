@@ -1,7 +1,7 @@
-package construct
+package com.sila.theday.abstracts.construct
 
-import construct.Activity.PlaceTimeStation
-import construct.Plan.SingleActivity
+import com.sila.theday.abstracts.construct.Activity.PlaceTimeStation
+import com.sila.theday.abstracts.construct.Plan.SingleActivity
 
 sealed trait Plan extends RelationalTemporalEvent {
   type Time = Int

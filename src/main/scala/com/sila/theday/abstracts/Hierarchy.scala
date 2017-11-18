@@ -1,4 +1,4 @@
-package abstracts
+package com.sila.theday.abstracts
 
 
 sealed abstract class Hierarchy[A] {

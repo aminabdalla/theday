@@ -1,5 +1,7 @@
+package com.sila.theday
+
+import com.sila.theday.abstracts.primitive._
 import org.scalatest.FunSuite
-import primitive._
 
 class GranularitySpec extends FunSuite {
 

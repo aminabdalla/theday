@@ -1,7 +1,7 @@
-package construct
+package com.sila.theday.abstracts.construct
 
-import abstracts.Hierarchy
-import primitive.Geometry
+import com.sila.theday.abstracts.Hierarchy
+import com.sila.theday.abstracts.primitive.Geometry
 
 class Geography(geog: Hierarchy[Place]) {
 

@@ -1,10 +1,12 @@
-import abstracts.Node
-import construct.Activity.{PlaceTimePath, PlaceTimeStation}
-import construct.Plan.{ActivitySequence, SingleActivity}
-import construct._
+package com.sila.theday
+
+import com.sila.theday.abstracts.Node
+import com.sila.theday.abstracts.construct.Activity.{PlaceTimePath, PlaceTimeStation}
+import com.sila.theday.abstracts.construct.Plan.{ActivitySequence, SingleActivity}
+import com.sila.theday.abstracts.construct._
+import com.sila.theday.abstracts.primitive.Geometry.POINT
+import com.sila.theday.abstracts.primitive._
 import org.scalatest.{FlatSpec, Matchers}
-import primitive.Geometry.POINT
-import primitive._
 
 
 trait BaseTest extends FlatSpec with Matchers {

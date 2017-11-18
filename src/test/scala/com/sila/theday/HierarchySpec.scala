@@ -1,6 +1,4 @@
-
-
-import org.scalatest.{FlatSpec, Matchers}
+package com.sila.theday
 
 class HierarchySpec extends BaseTest {
 

@@ -1,4 +1,4 @@
-package construct
+package com.sila.theday.abstracts.construct
 
 trait RelationalTemporalEvent extends TemporalEvent {
   def starts(i: RelationalTemporalEvent): Boolean = this.getStartTime == i.getStartTime && this.getEndTime < i.getEndTime

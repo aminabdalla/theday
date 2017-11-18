@@ -1,6 +1,6 @@
-package construct
+package com.sila.theday.abstracts.construct
 
-import construct.TemporalEvent.Interval
+import com.sila.theday.abstracts.construct.TemporalEvent.Interval
 
 trait TemporalEvent {
   def getTimeSpan : Interval = (this.getStartTime,this.getEndTime)

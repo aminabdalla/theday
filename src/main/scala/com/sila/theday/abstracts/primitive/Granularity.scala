@@ -1,4 +1,4 @@
-package primitive
+package com.sila.theday.abstracts.primitive
 
 sealed abstract trait Granularity extends Ordered[Granularity] {
 

@@ -1,3 +1,5 @@
+package com.sila.theday
+
 import org.scalatest.{FlatSpec, Matchers}
 
 class PlaceSpec extends FlatSpec with Matchers {

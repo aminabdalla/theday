@@ -1,4 +1,6 @@
-import construct.Activity.PlaceTimeStation
+package com.sila.theday
+
+import com.sila.theday.abstracts.construct.Activity.PlaceTimeStation
 import org.scalatest.FunSuite
 
 class RelationalTemporalEventSpec extends FunSuite {

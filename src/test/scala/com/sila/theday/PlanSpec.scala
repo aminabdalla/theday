@@ -1,8 +1,7 @@
-import construct.Activity.{PlaceTimePath, PlaceTimeStation}
-import construct.{Place, Plan}
-import construct.Plan.{ActivitySequence, SingleActivity}
-import primitive.Building
-import primitive.Geometry.POINT
+package com.sila.theday
+
+import com.sila.theday.abstracts.construct.Activity.{PlaceTimePath, PlaceTimeStation}
+import com.sila.theday.abstracts.construct.Plan.{ActivitySequence, SingleActivity}
 
 class PlanSpec extends BaseTest {
 

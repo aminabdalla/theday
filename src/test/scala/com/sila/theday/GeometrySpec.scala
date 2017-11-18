@@ -1,5 +1,7 @@
-import org.scalatest.{FlatSpec, FunSuite, Matchers}
-import primitive.Geometry
+package com.sila.theday
+
+import com.sila.theday.abstracts.primitive.Geometry
+import org.scalatest.{FlatSpec, Matchers}
 
 class GeometrySpec extends FlatSpec with Matchers {
 

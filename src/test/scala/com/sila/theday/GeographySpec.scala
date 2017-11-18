@@ -1,4 +1,6 @@
-import construct.Geography
+package com.sila.theday
+
+import com.sila.theday.abstracts.construct.Geography
 
 class GeographySpec extends BaseTest {
 
