@@ -57,7 +57,7 @@ object Plan {
       else
         plan match {
           case SingleActivity(_) => new ActivitySequence(List(this, plan).sortWith((p1, p2) => p1.before(p2)))
-          case ActivitySequence(activities) =>  new ActivitySequence((plan.flatten :+ this).sortWith((p1, p2) => p1.before(p2)))
+          case ActivitySequence(activities) => new ActivitySequence((plan.flatten :+ this).sortWith((p1, p2) => p1.before(p2)))
 
         }
   }
