@@ -1,5 +1,7 @@
 package com.sila.theday.abstracts
 
+import scala.annotation.tailrec
+
 
 sealed abstract class Hierarchy[A] {
   def isEmpty: Boolean
@@ -26,7 +28,7 @@ case class Node[A](value: A, subItems: List[Hierarchy[A]], parent: A) extends Hi
     case n@Node(v, l, _) =>
       if(v == position)
         Some(n)
-      else if (l.find(_.value == position).isDefined)
+      else if (l.map(_.value).contains(position))
         l.find(_.value == position)
       else
         l.flatMap(s => s.subHierarchy(position)).find(_.value == position)

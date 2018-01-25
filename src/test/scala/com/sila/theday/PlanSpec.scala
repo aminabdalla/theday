@@ -1,7 +1,7 @@
 package com.sila.theday
 
 import com.sila.theday.abstracts.construct.Activity.{PlaceTimePath, PlaceTimeStation}
-import com.sila.theday.abstracts.construct.Plan.{ActivitySequence, SingleActivity}
+import com.sila.theday.abstracts.construct.{ActivityAlternatives, ActivitySequence, SingleActivity}
 
 class PlanSpec extends BaseTest {
 
@@ -40,20 +40,20 @@ class PlanSpec extends BaseTest {
   }
 
   it should "check if blocks of activities are before others" in {
-    SingleActivityat0.before(SingleActivityat2) shouldBe true
-    SingleActivityat2.before(SingleActivityat0) shouldBe false
-    SingleActivityat0.before(overlappingSingleActivity) shouldBe false
-    SingleActivityat0.before(coveringActivityStart0End5) shouldBe false
-    coveringActivityStart0End5.before(SingleActivityat0) shouldBe false
+    SingleActivityAt0.before(SingleActivityAt2) shouldBe true
+    SingleActivityAt2.before(SingleActivityAt0) shouldBe false
+    SingleActivityAt0.before(overlappingSingleActivity) shouldBe false
+    SingleActivityAt0.before(coveringActivityStart0End5) shouldBe false
+    coveringActivityStart0End5.before(SingleActivityAt0) shouldBe false
   }
 
   it should "check blocks of activities are parallel" in {
-    SingleActivityat0.parallel(overlappingSingleActivity) shouldBe true
-    overlappingSingleActivity.parallel(SingleActivityat0) shouldBe true
+    SingleActivityAt0.parallel(overlappingSingleActivity) shouldBe true
+    overlappingSingleActivity.parallel(SingleActivityAt0) shouldBe true
   }
 
   it should "check if blocks of activities are chainable" in {
-    SingleActivityat0.isChainable(SingleActivityat2) shouldBe true
+    SingleActivityAt0.isChainable(SingleActivityAt2) shouldBe true
     sequenceOfActivities.isChainable(singleActivityStart4End5) shouldBe true
   }
 
@@ -74,7 +74,7 @@ class PlanSpec extends BaseTest {
 
   it should "returns a coarsened plan that covers the initial one" in {
     implicit val geo = geog
-    val expectedResultActivity = SingleActivity(PlaceTimeStation(londonPlace,(0,3),"supermarket to zoo,home"))
+    val expectedResultActivity = SingleActivity(PlaceTimeStation(londonPlace, (0, 3), "supermarket to zoo,home"))
     unsortedSequenceOfActivities.coarsen shouldBe expectedResultActivity
   }
 
@@ -82,7 +82,7 @@ class PlanSpec extends BaseTest {
     val singleActivityFirst = SingleActivity(PlaceTimeStation(homePlace, (0, 2), "home"))
     val singleActivitySecond = SingleActivity(PlaceTimeStation(cinemaPlace, (3, 4), "cinema"))
 
-    val combinedResult = new ActivitySequence(List(singleActivityFirst,singleActivitySecond))
+    val combinedResult = new ActivitySequence(List(singleActivityFirst, singleActivitySecond))
 
     singleActivityFirst.combine(singleActivityFirst) shouldBe singleActivityFirst
     singleActivitySecond.combine(singleActivityFirst) shouldBe combinedResult
@@ -91,12 +91,12 @@ class PlanSpec extends BaseTest {
 
   it should "combine single and sequence activities in the right order" in {
     val singleActivityFirst = SingleActivity(PlaceTimeStation(homePlace, (0, 2), "home"))
-    val singleActivityInTheMiddle = SingleActivity(PlaceTimePath(homePlace,cinemaPlace, (0, 2), "travel"))
+    val singleActivityInTheMiddle = SingleActivity(PlaceTimePath(homePlace, cinemaPlace, (0, 2), "travel"))
     val singleActivitySecond = SingleActivity(PlaceTimeStation(cinemaPlace, (3, 4), "cinema"))
 
     val activitySequence = singleActivityFirst.combine(singleActivitySecond)
 
-    val combinedResult = new ActivitySequence(List(singleActivityFirst,singleActivityInTheMiddle,singleActivitySecond))
+    val combinedResult = ActivitySequence(List(singleActivityFirst, singleActivityInTheMiddle, singleActivitySecond))
 
     activitySequence.combine(activitySequence) shouldBe activitySequence
     activitySequence.combine(singleActivityInTheMiddle) shouldBe combinedResult
@@ -105,4 +105,12 @@ class PlanSpec extends BaseTest {
 
   }
 
+  it should "combine two mutually exclusive activities into an Alt type" in {
+    val singleActivity1 = SingleActivity(PlaceTimeStation(cinemaPlace, (3, 4), "cinema"))
+    val singleActivity2 = SingleActivity(PlaceTimeStation(homePlace, (3, 4), "home"))
+    val combinedResult = ActivityAlternatives(Set(singleActivity1, singleActivity2))
+
+    singleActivity1.combine(singleActivity2) shouldBe combinedResult
+
+  }
 }

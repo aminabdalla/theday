@@ -2,7 +2,6 @@ package com.sila.theday
 
 import com.sila.theday.abstracts.Node
 import com.sila.theday.abstracts.construct.Activity.{PlaceTimePath, PlaceTimeStation}
-import com.sila.theday.abstracts.construct.Plan.{ActivitySequence, SingleActivity}
 import com.sila.theday.abstracts.construct._
 import com.sila.theday.abstracts.primitive.Geometry.POINT
 import com.sila.theday.abstracts.primitive._
@@ -68,9 +67,9 @@ trait BaseTest extends FlatSpec with Matchers {
   val movingActivityWithTravel = PlaceTimePath(homePlace, francePlace, (5, 8), "")
   val overlappingActivity = PlaceTimeStation(uniPlace, (0, 2), "")
   val overlappingSingleActivity = SingleActivity(overlappingActivity)
-  val SingleActivityat0 = SingleActivity(staticActivityStartsAt0)
-  val SingleActivityat4 = SingleActivity(movingActivityStartsAt2)
-  val SingleActivityat2 = SingleActivity(movingActivityStartsAt2)
+  val SingleActivityAt0 = SingleActivity(staticActivityStartsAt0)
+  val SingleActivityAt4 = SingleActivity(movingActivityStartsAt2)
+  val SingleActivityAt2 = SingleActivity(movingActivityStartsAt2)
   val sequenceWithTravel = ActivitySequence(List(SingleActivity(staticActivityStartsAt0), SingleActivity(movingActivityStartsAt2), SingleActivity(movingActivityWithTravel)))
   val sequenceOfActivities = ActivitySequence(List(SingleActivity(staticActivityStartsAt0), SingleActivity(movingActivityStartsAt2)))
   val stayingAtHomePlan = ActivitySequence(List(SingleActivity(staticActivityStartsAt0), SingleActivity(stayingAtHomeFrom2)))
