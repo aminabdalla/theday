@@ -2,7 +2,7 @@ package com.sila.theday.abstracts.construct
 
 import com.sila.theday.abstracts.construct.TemporalEvent._
 
-abstract class Activity(var name: String, var timeSpan: Interval) extends RelationalTemporalEvent {
+abstract class Activity(val name: String, val timeSpan: Interval) extends RelationalTemporalEvent {
   def getPlaces: List[Place]
 
   def getStartPlace: Place

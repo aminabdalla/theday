@@ -11,9 +11,11 @@ sealed trait Plan {
 
   def endPlace: Place
 
-  def potentialStartTime : List[Time]
+  def before(plan: Plan): Boolean = this.potentialEndTime.forall(endTime => !plan.potentialStartTime.exists(startTime => startTime < endTime))
 
-  def potentialEndTime : List[Time]
+  def potentialStartTime: List[Time]
+
+  def potentialEndTime: List[Time]
 
   def description: String
 
@@ -27,21 +29,23 @@ sealed trait Plan {
 
   def flatten: List[Plan]
 
-//  def parallel(plan: Plan): Boolean = if (this.before(plan) || plan.before(this)) false else true
+  def parallel(plan: Plan): Boolean = if (this.before(plan) || plan.before(this)) false else true
 
-//  def isChainable(plan: Plan): Boolean = this.before(plan) || plan.before(this)
+  def isChainable(plan: Plan): Boolean = this.before(plan) || plan.before(this)
+
+//  def during()
 
   def combine(plan: Plan): Plan
 
 }
 
-case class SingleActivity(activity: Activity) extends Plan with TemporalEvent {
+case class SingleActivity(activity: Activity) extends Plan {
 
   override def description: String = activity.name
 
-  override def potenitalStartTime: Time = List(activity.getStartTime)
+  override def potentialStartTime: List[Time] = List(activity.getStartTime)
 
-  override def potentialEndTime: Time = List(activity.getEndTime)
+  override def potentialEndTime: List[Time] = List(activity.getEndTime)
 
   override def startPlace: Place = activity.getStartPlace
 
@@ -63,17 +67,23 @@ case class SingleActivity(activity: Activity) extends Plan with TemporalEvent {
       }
 }
 
-case class ActivitySequence(plan: List[Plan]) extends Plan with TemporalEvent {
+case class ActivitySequence(plan: List[Plan]) extends Plan {
 
   override def description: String = this.flatten.map(_.description).mkString(",")
 
-  override def getStartTime: Time = plan.map(b => b.getStartTime).sortBy(a => a)
+  override def potentialStartTime: List[Time] = {
+    val potentialTimeOfActivities: Seq[Plan#Time] = plan.flatMap(_.potentialStartTime.sorted.headOption)
+    List(potentialTimeOfActivities.sorted.head)
+  }
 
-  override def getEndTime: Time = plan.map(b => b.getEndTime).sortBy(a => a).reverse
+  override def potentialEndTime: List[Time] = {
+    val potentialTimeOfActivities: Seq[Plan#Time] = plan.flatMap(_.potentialEndTime.sorted.reverse.headOption)
+    List(potentialTimeOfActivities.sorted.reverse.head)
+  }
 
-  override def startPlace: Place = plan.sortBy(b => b.getStartTime).map(b => b.startPlace).head
+  override def startPlace: Place = plan.sortBy(b => b.potentialStartTime.head).map(b => b.startPlace).head
 
-  override def endPlace: Place = plan.sortBy(b => b.getEndTime).map(b => b.endPlace).reverse.head
+  override def endPlace: Place = plan.sortBy(b => b.potentialEndTime.head).map(b => b.endPlace).reverse.head
 
   override def flatten: List[Plan] = plan.flatMap(b => b.flatten)
 
@@ -81,7 +91,7 @@ case class ActivitySequence(plan: List[Plan]) extends Plan with TemporalEvent {
 
   //    //TODO implement monoid methods properly
   override def combine(plan: Plan): Plan =
-    if (this.equal(plan)) this
+    if (this == plan) this
     else
       plan match {
         case SingleActivity(_) => new ActivitySequence((this.flatten :+ plan).sortWith((p1, p2) => p1.before(p2)))
@@ -106,7 +116,7 @@ case class ActivityAlternatives(potentials: Set[Plan]) extends Plan {
 
   override def combine(plan: Plan) = ???
 
-  override def getStartTime = ???
+  override def potentialStartTime = ???
 
-  override def getEndTime = ???
+  override def potentialEndTime = ???
 }
