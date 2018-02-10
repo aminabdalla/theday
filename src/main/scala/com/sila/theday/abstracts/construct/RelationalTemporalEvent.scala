@@ -20,5 +20,7 @@ trait RelationalTemporalEvent extends TemporalEvent {
 
   def finishes(i: RelationalTemporalEvent): Boolean = this.getStartTime > i.getStartTime && this.getEndTime == i.getEndTime
   def finishedBy(i: RelationalTemporalEvent): Boolean = i.finishes(this)
+
+  def mutuallyExclusive(i: RelationalTemporalEvent): Boolean = !this.after(i) && !this.before(i)
 }
 

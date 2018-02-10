@@ -54,4 +54,7 @@ class RelationalTemporalEventSpec extends FunSuite {
 
   test("\"(0,4) is finished by (2,4)\"")(assert(eventFrom0_4.finishedBy(eventFrom2_4)))
   test("\"(2,3) is not finished by (0,4)\"")(assert(!eventFrom2_3.finishedBy(eventFrom0_4)))
+
+  test("(0,4) is mutually exclusive to (0,4)")(assert(eventFrom0_4.mutuallyExclusive(eventFrom0_4)))
+  test("(0,4) is mutually exclusive to (1,3)")(assert(eventFrom0_4.mutuallyExclusive(eventFrom1_3)))
 }

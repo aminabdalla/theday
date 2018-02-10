@@ -67,3 +67,27 @@ def returnTheInt = {
 callSomething(returnTheInt, returnTheInt)
 callSomethingByName(returnTheInt, returnTheInt)
 
+
+val input = List("a", "b", "c", "c", "d", "b", "f", "b","b","b")
+
+val resultinger = input.map(value => (value, 1))
+  .groupBy[String](_._1).mapValues[Int](kv => kv.map(_._2).sum).get("b")
+
+def recurs(acc: List[(String, Int)], input: List[String]): List[(String, Int)] = input match {
+  case Nil => acc
+  case (x :: xs) => {
+    if (!acc.isEmpty && x == acc.head._1)
+      recurs((x, acc.head._2 + 1) :: acc.tail,xs)
+    else recurs(((x, 1) :: acc), xs)
+  }
+}
+
+recurs(List.empty, input)
+
+
+val testList = List(1,2,3,4,5)
+val resultingering = testList.toStream.map(doSome).take(3)
+
+def doSome(n : Int) = {
+  println(n)
+}

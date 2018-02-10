@@ -33,7 +33,7 @@ sealed trait Plan {
 
   def isChainable(plan: Plan): Boolean = this.before(plan) || plan.before(this)
 
-//  def during()
+  //  def during()
 
   def combine(plan: Plan): Plan
 
@@ -61,8 +61,19 @@ case class SingleActivity(activity: Activity) extends Plan {
     if (this == plan) this
     else
       plan match {
-        case SingleActivity(_) => new ActivitySequence(List(this, plan).sortWith((p1, p2) => p1.before(p2)))
-        case ActivitySequence(activities) => new ActivitySequence((plan.flatten :+ this).sortWith((p1, p2) => p1.before(p2)))
+        case SingleActivity(activity) =>
+          if (activity.mutuallyExclusive(this.activity))
+            new ActivityAlternatives(Set(this, plan))
+          else new ActivitySequence(List(this, plan).sortWith((p1, p2) => p1.before(p2)))
+
+        case ActivitySequence(sequence) => sequence.foldLeft[Plan](this) { (acc, a) =>
+          acc.combine(a)
+        }
+
+        case ActivityAlternatives(alternatives) => if (plan.isChainable(this))
+          new ActivitySequence(List(plan, this))
+        else
+          new ActivityAlternatives(alternatives.map(_.combine(plan)))
 
       }
 }
@@ -110,13 +121,16 @@ case class ActivityAlternatives(potentials: Set[Plan]) extends Plan {
 
   override def description = ???
 
-  override def placeProjection = ???
+  override def placeProjection = potentials.flatMap(_.placeProjection).toList
 
-  override def flatten = ???
+  override def flatten = potentials.toList
 
-  override def combine(plan: Plan) = ???
+  override def combine(plan: Plan) = if (this == plan) this else
+    plan match {
+      case SingleActivity(_) => if (plan.isChainable(this)) new ActivitySequence(List(plan,this).sortWith((a,b) => a.before(b))) else new ActivityAlternatives(Set(plan,this))
+    }
 
-  override def potentialStartTime = ???
+  override def potentialStartTime = potentials.flatMap(_.potentialStartTime).toList
 
-  override def potentialEndTime = ???
+  override def potentialEndTime = potentials.flatMap(_.potentialEndTime).toList
 }

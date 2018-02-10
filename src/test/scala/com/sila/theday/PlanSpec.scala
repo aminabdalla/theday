@@ -91,7 +91,7 @@ class PlanSpec extends BaseTest {
 
   it should "combine single and sequence activities in the right order" in {
     val singleActivityFirst = SingleActivity(PlaceTimeStation(homePlace, (0, 2), "home"))
-    val singleActivityInTheMiddle = SingleActivity(PlaceTimePath(homePlace, cinemaPlace, (0, 2), "travel"))
+    val singleActivityInTheMiddle = SingleActivity(PlaceTimePath(homePlace, cinemaPlace, (2, 3), "travel"))
     val singleActivitySecond = SingleActivity(PlaceTimeStation(cinemaPlace, (3, 4), "cinema"))
 
     val activitySequence = singleActivityFirst.combine(singleActivitySecond)
@@ -105,12 +105,21 @@ class PlanSpec extends BaseTest {
 
   }
 
-  it should "combine two mutually exclusive activities into an Alt type" in {
+  it should "combine two mutually exclusive single activities into an Alt type" in {
     val singleActivity1 = SingleActivity(PlaceTimeStation(cinemaPlace, (3, 4), "cinema"))
     val singleActivity2 = SingleActivity(PlaceTimeStation(homePlace, (3, 4), "home"))
     val combinedResult = ActivityAlternatives(Set(singleActivity1, singleActivity2))
-
     singleActivity1.combine(singleActivity2) shouldBe combinedResult
+    singleActivity2.combine(singleActivity1) shouldBe combinedResult
+  }
 
+  it should "combine two mutually exclusive activities, one single and a sequence into a Seq with a nested Alt type" in {
+    val singleActivity1 = SingleActivity(PlaceTimeStation(cinemaPlace, (3, 4), "cinema"))
+    val singleActivity2 = SingleActivity(PlaceTimeStation(homePlace, (3, 4), "home"))
+    val lastActivity = SingleActivity(PlaceTimeStation(uniPlace, (5, 6), "uni"))
+    val sequencedActivity = ActivitySequence(List(singleActivity1,lastActivity))
+    val combinedResult = ActivitySequence(List(ActivityAlternatives(Set(singleActivity1, singleActivity2)),lastActivity))
+//      sequencedActivity.combine(singleActivity2) shouldBe combinedResult
+    singleActivity2.combine(sequencedActivity) shouldBe combinedResult
   }
 }
