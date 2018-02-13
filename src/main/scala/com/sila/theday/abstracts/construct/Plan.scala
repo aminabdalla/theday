@@ -13,6 +13,8 @@ sealed trait Plan {
 
   def before(plan: Plan): Boolean = this.potentialEndTime.forall(endTime => !plan.potentialStartTime.exists(startTime => startTime < endTime))
 
+  def after(plan: Plan): Boolean = this.potentialStartTime.forall(startTime => !plan.potentialEndTime.exists(endTime => startTime < endTime))
+
   def potentialStartTime: List[Time]
 
   def potentialEndTime: List[Time]
@@ -59,23 +61,8 @@ case class SingleActivity(activity: Activity) extends Plan {
 
   override def combine(plan: Plan): Plan =
     if (this == plan) this
-    else
-      plan match {
-        case SingleActivity(activity) =>
-          if (activity.mutuallyExclusive(this.activity))
-            new ActivityAlternatives(Set(this, plan))
-          else new ActivitySequence(List(this, plan).sortWith((p1, p2) => p1.before(p2)))
+    else Plan.combine(this, plan)
 
-        case ActivitySequence(sequence) => sequence.foldLeft[Plan](this) { (acc, a) =>
-          acc.combine(a)
-        }
-
-        case ActivityAlternatives(alternatives) => if (plan.isChainable(this))
-          new ActivitySequence(List(plan, this))
-        else
-          new ActivityAlternatives(alternatives.map(_.combine(plan)))
-
-      }
 }
 
 case class ActivitySequence(plan: List[Plan]) extends Plan {
@@ -100,14 +87,9 @@ case class ActivitySequence(plan: List[Plan]) extends Plan {
 
   override def empty: Plan = ActivitySequence(List())
 
-  //    //TODO implement monoid methods properly
-  override def combine(plan: Plan): Plan =
-    if (this == plan) this
-    else
-      plan match {
-        case SingleActivity(_) => new ActivitySequence((this.flatten :+ plan).sortWith((p1, p2) => p1.before(p2)))
-        case ActivitySequence(activities) => new ActivitySequence(this.flatten :+ plan)
-      }
+  override def combine(otherPlan: Plan): Plan =
+    if (this == otherPlan) this
+    else Plan.combine(this, otherPlan)
 
   override def placeProjection: List[Place] = plan.flatMap(p => p.placeProjection).distinct
 }
@@ -125,12 +107,24 @@ case class ActivityAlternatives(potentials: Set[Plan]) extends Plan {
 
   override def flatten = potentials.toList
 
-  override def combine(plan: Plan) = if (this == plan) this else
-    plan match {
-      case SingleActivity(_) => if (plan.isChainable(this)) new ActivitySequence(List(plan,this).sortWith((a,b) => a.before(b))) else new ActivityAlternatives(Set(plan,this))
-    }
+  override def combine(plan: Plan) = if (this == plan) this else Plan.combine(this, plan)
 
   override def potentialStartTime = potentials.flatMap(_.potentialStartTime).toList
 
   override def potentialEndTime = potentials.flatMap(_.potentialEndTime).toList
+}
+
+object Plan {
+  def combine(planA: Plan, planB: Plan): Plan = (planA, planB) match {
+    case (SingleActivity(_), ActivitySequence(s2)) if planA before planB => ActivitySequence(planA :: s2)
+    case (SingleActivity(_), ActivitySequence(s2)) if planB before planA => ActivitySequence(s2 :+ planA)
+    case (_, ActivitySequence(sequence)) => sequence.foldLeft[Plan](planA) { (acc, a) => acc.combine(a) }
+    case (ActivitySequence(s1), ActivitySequence(s2)) => ActivitySequence((s1 ++ s2) sortWith ((p1, p2) => p1.before(p2)))
+    case (ActivitySequence(_), SingleActivity(_)) => planB.combine(planA)
+    case (ActivitySequence(_), _) => Plan.combine(planB,planA)
+    case (ActivityAlternatives(_), SingleActivity(_)) => planB.combine(planA)
+    case (_, _) if planA before planB => ActivitySequence(List(planA, planB))
+    case (_, _) if planB before planA => ActivitySequence(List(planB, planA))
+    case (_, _) => ActivityAlternatives(Set(planA, planB))
+  }
 }

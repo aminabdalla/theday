@@ -67,10 +67,10 @@ class PlanSpec extends BaseTest {
     stayingAtHomePlan.placeProjection.size shouldBe 1
   }
 
-//  it should "check if activities are temporally contained" in {
-//    attendingLecturesFrom1_4.during(goingToUniFrom0_5) shouldBe true
-//    attendingLecturesFrom1_4.during(singleActivityStart4End5) shouldBe false
-//  }
+  //  it should "check if activities are temporally contained" in {
+  //    attendingLecturesFrom1_4.during(goingToUniFrom0_5) shouldBe true
+  //    attendingLecturesFrom1_4.during(singleActivityStart4End5) shouldBe false
+  //  }
 
   it should "returns a coarsened plan that covers the initial one" in {
     implicit val geo = geog
@@ -117,9 +117,38 @@ class PlanSpec extends BaseTest {
     val singleActivity1 = SingleActivity(PlaceTimeStation(cinemaPlace, (3, 4), "cinema"))
     val singleActivity2 = SingleActivity(PlaceTimeStation(homePlace, (3, 4), "home"))
     val lastActivity = SingleActivity(PlaceTimeStation(uniPlace, (5, 6), "uni"))
-    val sequencedActivity = ActivitySequence(List(singleActivity1,lastActivity))
-    val combinedResult = ActivitySequence(List(ActivityAlternatives(Set(singleActivity1, singleActivity2)),lastActivity))
-//      sequencedActivity.combine(singleActivity2) shouldBe combinedResult
+    val sequencedActivity = ActivitySequence(List(singleActivity1, lastActivity))
+    val combinedResult = ActivitySequence(List(ActivityAlternatives(Set(singleActivity1, singleActivity2)), lastActivity))
+    sequencedActivity.combine(singleActivity2) shouldBe combinedResult
     singleActivity2.combine(sequencedActivity) shouldBe combinedResult
+  }
+
+  it should "combine activities into a sequence" in {
+    val singleActivity1 = SingleActivity(PlaceTimeStation(homePlace, (3, 4), "home"))
+    val singleActivity2 = SingleActivity(PlaceTimeStation(cinemaPlace, (4, 5), "cinema"))
+    val singleActivity3 = SingleActivity(PlaceTimeStation(uniPlace, (5, 6), "uni"))
+    val singleActivity4 = SingleActivity(PlaceTimeStation(viennaPlace, (6, 7), "vienna"))
+    val sequence1 = singleActivity1.combine(singleActivity2)
+    val sequence2 = singleActivity3.combine(singleActivity4)
+
+    val expectedSequence = ActivitySequence(List(singleActivity1, singleActivity2, singleActivity3, singleActivity4))
+
+    sequence1 combine sequence2 shouldBe expectedSequence
+    sequence2 combine sequence1 shouldBe expectedSequence
+    singleActivity1 combine singleActivity2 combine sequence2 shouldBe expectedSequence
+    singleActivity1 combine singleActivity2 combine singleActivity3 combine singleActivity4 shouldBe expectedSequence
+    singleActivity1 combine singleActivity3 combine singleActivity4 combine singleActivity2 shouldBe expectedSequence
+  }
+
+  it should "combine alternatives with a sequence" in {
+    val atHome = SingleActivity(PlaceTimeStation(homePlace, (3, 4), "home"))
+    val atTheCinema = SingleActivity(PlaceTimeStation(cinemaPlace, (3, 4), "cinema"))
+    val somethingAtTheStart = SingleActivity(PlaceTimeStation(viennaPlace,(0,2),"somethingAtTheStart"))
+    val somethingAtTheEnd = SingleActivity(PlaceTimeStation(viennaPlace,(5,6),"somethingAtTheEnd"))
+    val altActivities = ActivityAlternatives(Set(atHome,atTheCinema))
+    val expectedResult = ActivitySequence(List(somethingAtTheStart,ActivityAlternatives(Set(atHome,atTheCinema)),somethingAtTheEnd))
+    (somethingAtTheStart combine somethingAtTheEnd) combine altActivities shouldBe expectedResult
+
+
   }
 }
