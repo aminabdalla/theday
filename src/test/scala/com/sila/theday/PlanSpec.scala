@@ -147,8 +147,9 @@ class PlanSpec extends BaseTest {
     val somethingAtTheEnd = SingleActivity(PlaceTimeStation(viennaPlace,(5,6),"somethingAtTheEnd"))
     val altActivities = ActivityAlternatives(Set(atHome,atTheCinema))
     val expectedResult = ActivitySequence(List(somethingAtTheStart,ActivityAlternatives(Set(atHome,atTheCinema)),somethingAtTheEnd))
-    (somethingAtTheStart combine somethingAtTheEnd) combine altActivities shouldBe expectedResult
-
-
+    somethingAtTheStart combine somethingAtTheEnd combine altActivities shouldBe expectedResult
+    somethingAtTheStart combine altActivities combine somethingAtTheEnd shouldBe expectedResult
+    altActivities combine somethingAtTheStart combine somethingAtTheEnd shouldBe expectedResult
   }
+
 }
