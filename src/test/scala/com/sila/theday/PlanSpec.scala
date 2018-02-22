@@ -1,7 +1,8 @@
 package com.sila.theday
 
 import com.sila.theday.abstracts.construct.Activity.{PlaceTimePath, PlaceTimeStation}
-import com.sila.theday.abstracts.construct.{ActivityAlternatives, ActivitySequence, SingleActivity}
+import com.sila.theday.abstracts.construct.Plan._
+import com.sila.theday.abstracts.construct.{ActivityAlternatives, ActivitySequence, Plan, SingleActivity}
 
 class PlanSpec extends BaseTest {
 
@@ -150,6 +151,14 @@ class PlanSpec extends BaseTest {
     somethingAtTheStart combine somethingAtTheEnd combine altActivities shouldBe expectedResult
     somethingAtTheStart combine altActivities combine somethingAtTheEnd shouldBe expectedResult
     altActivities combine somethingAtTheStart combine somethingAtTheEnd shouldBe expectedResult
+  }
+
+  it should "combine alternatives with alternatives into alternatives of sequences" in {
+    val atUni = SingleActivity(PlaceTimeStation(uniPlace, (3, 4), "uni"))
+    val atHome = SingleActivity(PlaceTimeStation(homePlace, (3, 6), "home"))
+    val homeVsUni = combine(atUni,atHome)
+    val atVienna = SingleActivity(PlaceTimeStation(viennaPlace, (4, 5), "vienna"))
+    combine(homeVsUni,atVienna) shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atVienna)),atHome))
   }
 
 }

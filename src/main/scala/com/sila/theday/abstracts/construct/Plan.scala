@@ -118,13 +118,33 @@ object Plan {
   def combine(planA: Plan, planB: Plan): Plan = (planA, planB) match {
     case (SingleActivity(_), ActivitySequence(s2)) if planA before planB => ActivitySequence(planA :: s2)
     case (SingleActivity(_), ActivitySequence(s2)) if planB before planA => ActivitySequence(s2 :+ planA)
-    case (_, ActivitySequence(sequence)) => sequence.foldLeft[Plan](planA) { (acc, a) => acc.combine(a) }
     case (ActivitySequence(s1), ActivitySequence(s2)) => ActivitySequence((s1 ++ s2) sortWith ((p1, p2) => p1.before(p2)))
-    case (ActivitySequence(_), SingleActivity(_)) => planB.combine(planA)
-    case (ActivitySequence(_), _) => Plan.combine(planB,planA)
-    case (ActivityAlternatives(_), SingleActivity(_)) => planB.combine(planA)
+    case (_, ActivitySequence(sequence)) => sequence.foldLeft[Plan](planA) { (acc, a) =>
+      acc.combine(a)
+    }
+    case (ActivitySequence(_), SingleActivity(_)) => planB combine planA
+    case (ActivitySequence(_), _) => planB combine planA
     case (_, _) if planA before planB => ActivitySequence(List(planA, planB))
     case (_, _) if planB before planA => ActivitySequence(List(planB, planA))
+
+    case (ActivityAlternatives(a1), ActivityAlternatives(a2)) => ActivityAlternatives(a1 ++ a2)
+    case (ActivityAlternatives(alts), SingleActivity(_)) => ActivityAlternatives(mergeWithAlternatives(alts, planB))
+    case (SingleActivity(_), ActivityAlternatives(alternatives)) => ActivityAlternatives(alternatives.map { activity =>
+      activity.combine(planA)
+    })
     case (_, _) => ActivityAlternatives(Set(planA, planB))
   }
+
+
+  def mergeWithAlternatives(alternatives: Set[Plan], activity: Plan): Set[Plan] = {
+    alternatives.foldLeft(Set[Plan]()) { case (acc, nextActivity) =>
+      val combinedActivity = activity.combine(nextActivity)
+      combinedActivity match {
+        case ActivityAlternatives(_) => acc + nextActivity
+        case _ => acc + combinedActivity
+      }
+
+    }
+  }
+
 }
