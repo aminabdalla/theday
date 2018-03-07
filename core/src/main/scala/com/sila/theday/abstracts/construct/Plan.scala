@@ -129,9 +129,7 @@ object Plan {
 
     case (ActivityAlternatives(a1), ActivityAlternatives(a2)) => ActivityAlternatives(a1 ++ a2)
     case (ActivityAlternatives(alts), SingleActivity(_)) => ActivityAlternatives(mergeWithAlternatives(alts, planB))
-    case (SingleActivity(_), ActivityAlternatives(alternatives)) => ActivityAlternatives(alternatives.map { activity =>
-      activity.combine(planA)
-    })
+    case (SingleActivity(_), ActivityAlternatives(_)) => combine(planB,planA)
     case (_, _) => ActivityAlternatives(Set(planA, planB))
   }
 

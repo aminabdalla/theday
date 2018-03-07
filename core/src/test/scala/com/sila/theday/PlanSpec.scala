@@ -159,6 +159,9 @@ class PlanSpec extends BaseTest {
     val homeVsUni = combine(atUni,atHome)
     val atVienna = SingleActivity(PlaceTimeStation(viennaPlace, (4, 5), "vienna"))
     combine(homeVsUni,atVienna) shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atVienna)),atHome))
+    combine(atVienna,homeVsUni) shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atVienna)),atHome))
+    atHome combine (atVienna combine atUni) shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atVienna)),atHome))
+    (atHome combine atVienna) combine atUni shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atVienna)),atHome))
   }
 
 }
