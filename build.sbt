@@ -6,8 +6,8 @@ lazy val commonSettings = Seq(
 )
 
 lazy val root = Project("theday", file("."))
-lazy val api = project.settings(commonSettings)
 lazy val core = project.settings(commonSettings)
+lazy val api = project.dependsOn(core)
 
 
 //val akkaHttpVersion = "10.0.10"
