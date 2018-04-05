@@ -2,7 +2,7 @@ package com.sila.theday
 
 import com.sila.theday.abstracts.construct.Activity.{PlaceTimePath, PlaceTimeStation}
 import com.sila.theday.abstracts.construct.Plan._
-import com.sila.theday.abstracts.construct.{ActivityAlternatives, ActivitySequence, Plan, SingleActivity}
+import com.sila.theday.abstracts.construct.{ActivityAlternatives, ActivitySequence, SingleActivity}
 
 class PlanSpec extends BaseTest {
 
@@ -25,36 +25,36 @@ class PlanSpec extends BaseTest {
 
   it should "return start and end place of single static activity" in {
     unsortedSequenceOfActivities.potentialStartTime shouldBe List(0)
-    SingleActivity(staticActivityStartsAt0).endPlace.name shouldBe "Home"
+    SingleActivity(staticActivityStartsAt0).potentialEndPlaces.name shouldBe "Home"
   }
 
   it should "return start and end place of single moving activity" in {
-    SingleActivity(movingActivityStartsAt2).startPlace.name shouldBe "Supermarket"
-    SingleActivity(movingActivityStartsAt2).endPlace.name shouldBe "Zoo"
+    SingleActivity(movingActivityStartsAt2).potentialStartPlaces.name shouldBe "Supermarket"
+    SingleActivity(movingActivityStartsAt2).potentialEndPlaces.name shouldBe "Zoo"
   }
 
   it should "return start and end place of sorted and unsorted sequence of activities" in {
-    SingleActivity(movingActivityStartsAt2).endPlace.name shouldBe "Zoo"
-    unsortedSequenceOfActivities.startPlace.name shouldBe "Home"
-    sequenceOfActivities.endPlace.name shouldBe "Zoo"
-    unsortedSequenceOfActivities.endPlace.name shouldBe "Zoo"
+    SingleActivity(movingActivityStartsAt2).potentialEndPlaces.name shouldBe "Zoo"
+    unsortedSequenceOfActivities.potentialStartPlaces.name shouldBe "Home"
+    sequenceOfActivities.potentialEndPlaces.name shouldBe "Zoo"
+    unsortedSequenceOfActivities.potentialEndPlaces.name shouldBe "Zoo"
   }
 
-  it should "check if blocks of activities are before others" in {
-    SingleActivityAt0.before(SingleActivityAt2) shouldBe true
-    SingleActivityAt2.before(SingleActivityAt0) shouldBe false
-    SingleActivityAt0.before(overlappingSingleActivity) shouldBe false
-    SingleActivityAt0.before(coveringActivityStart0End5) shouldBe false
-    coveringActivityStart0End5.before(SingleActivityAt0) shouldBe false
+  it should "check if blocks of activities are before others from a temporal perspective" in {
+    BeingAtHomeFrom0To2.temporallyBefore(MovingFromSupermarketToZooFrom2To4) shouldBe true
+    MovingFromSupermarketToZooFrom2To4.temporallyBefore(BeingAtHomeFrom0To2) shouldBe false
+    BeingAtHomeFrom0To2.temporallyBefore(overlappingSingleActivity) shouldBe false
+    BeingAtHomeFrom0To2.temporallyBefore(coveringActivityStart0End5) shouldBe false
+    coveringActivityStart0End5.temporallyBefore(BeingAtHomeFrom0To2) shouldBe false
   }
 
   it should "check blocks of activities are parallel" in {
-    SingleActivityAt0.parallel(overlappingSingleActivity) shouldBe true
-    overlappingSingleActivity.parallel(SingleActivityAt0) shouldBe true
+    BeingAtHomeFrom0To2.parallel(overlappingSingleActivity) shouldBe true
+    overlappingSingleActivity.parallel(BeingAtHomeFrom0To2) shouldBe true
   }
 
   it should "check if blocks of activities are chainable" in {
-    SingleActivityAt0.isChainable(SingleActivityAt2) shouldBe true
+    BeingAtHomeFrom0To2.isChainable(MovingFromSupermarketToZooFrom2To4) shouldBe true
     sequenceOfActivities.isChainable(singleActivityStart4End5) shouldBe true
   }
 
@@ -162,6 +162,12 @@ class PlanSpec extends BaseTest {
     combine(atVienna,homeVsUni) shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atVienna)),atHome))
     atHome combine (atVienna combine atUni) shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atVienna)),atHome))
     (atHome combine atVienna) combine atUni shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atVienna)),atHome))
+  }
+
+
+  it should "return true/false if an activity is possible/impossible to achieve before another due to spatial restrictions" in {
+    BeingAtHomeFrom0To2.possibleBefore(SingleActivity(BeingAtUniFrom3To4PTS)) shouldBe false
+    BeingAtHomeFrom0To2.possibleBefore(SingleActivity(BeingAtUniFrom8To9PTS)) shouldBe true
   }
 
 }

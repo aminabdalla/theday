@@ -5,7 +5,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import com.sila.theday.abstracts.construct.Activity.PlaceTimeStation
 import com.sila.theday.abstracts.construct.{Place, SingleActivity}
-import com.sila.theday.abstracts.primitive.{City, Geometry}
+import com.sila.theday.abstracts.primitive.City
 import com.sila.theday.abstracts.primitive.Geometry.POINT
 
 import scala.io.StdIn
@@ -25,7 +25,6 @@ object WebServer {
     val route =
       path("hello") {
         get {
-//          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
           complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, someActivity.toString))
         }
       }

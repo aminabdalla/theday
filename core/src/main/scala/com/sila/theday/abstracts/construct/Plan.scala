@@ -7,13 +7,35 @@ sealed trait Plan {
 
   def empty: Plan
 
-  def startPlace: Place
+  def potentialStartPlaces: Set[Place]
 
-  def endPlace: Place
+  def potentialEndPlaces: Set[Place]
 
-  def before(plan: Plan): Boolean = this.potentialEndTime.forall(endTime => !plan.potentialStartTime.exists(startTime => startTime < endTime))
+  def temporalGapTo(plan : Plan) : Time = {
+    val earliestPossibleEndTime : Int = this.potentialEndTime.min
+    val latestPossibleStartTime = plan.potentialStartTime.max
+    latestPossibleStartTime - earliestPossibleEndTime
+  }
 
-  def after(plan: Plan): Boolean = this.potentialStartTime.forall(startTime => !plan.potentialEndTime.exists(endTime => startTime < endTime))
+  def temporallyBefore(plan: Plan): Boolean = this.potentialEndTime.forall(endTime => !plan.potentialStartTime.exists(startTime => startTime < endTime))
+
+  def temporallyAfter(plan: Plan): Boolean = this.potentialStartTime.forall(startTime => !plan.potentialEndTime.exists(endTime => startTime < endTime))
+
+  def possibleBefore(plan: Plan): Boolean = this match {
+    case _ if !this.temporallyBefore(plan) => false
+    case _ => {
+      val distance = for {
+        endPlace <- this.potentialEndPlaces
+        startPlace <- plan.potentialStartPlaces
+      } yield endPlace.location.euclideanDistance(startPlace.location)
+
+      val timeDifference = this.temporalGapTo(plan).toDouble
+      println(s"The minimum distance is ${distance.min} and time between $timeDifference")
+      distance.min < timeDifference
+    }
+  }
+
+  def possibleAfter(plan: Plan): Boolean = this.potentialStartTime.forall(startTime => !plan.potentialEndTime.exists(endTime => startTime < endTime))
 
   def potentialStartTime: List[Time]
 
@@ -31,9 +53,9 @@ sealed trait Plan {
 
   def flatten: List[Plan]
 
-  def parallel(plan: Plan): Boolean = if (this.before(plan) || plan.before(this)) false else true
+  def parallel(plan: Plan): Boolean = if (this.possibleBefore(plan) || plan.possibleBefore(this)) false else true
 
-  def isChainable(plan: Plan): Boolean = this.before(plan) || plan.before(this)
+  def isChainable(plan: Plan): Boolean = this.possibleBefore(plan) || plan.possibleBefore(this)
 
   //  def during()
 
@@ -49,9 +71,9 @@ case class SingleActivity(activity: Activity) extends Plan {
 
   override def potentialEndTime: List[Time] = List(activity.getEndTime)
 
-  override def startPlace: Place = activity.getStartPlace
+  override def potentialStartPlaces: Set[Place] = Set(activity.getStartPlace)
 
-  override def endPlace: Place = activity.getEndPlace
+  override def potentialEndPlaces: Set[Place] = Set(activity.getEndPlace)
 
   override def flatten: List[Plan] = List(SingleActivity(activity))
 
@@ -79,9 +101,9 @@ case class ActivitySequence(plan: List[Plan]) extends Plan {
     List(potentialTimeOfActivities.sorted.reverse.head)
   }
 
-  override def startPlace: Place = plan.sortBy(b => b.potentialStartTime.head).map(b => b.startPlace).head
+  override def potentialStartPlaces: Set[Place] = plan.flatMap(b => b.potentialStartPlaces).toSet
 
-  override def endPlace: Place = plan.sortBy(b => b.potentialEndTime.head).map(b => b.endPlace).reverse.head
+  override def potentialEndPlaces: Set[Place] = plan.flatMap(b => b.potentialEndPlaces).toSet
 
   override def flatten: List[Plan] = plan.flatMap(b => b.flatten)
 
@@ -97,15 +119,15 @@ case class ActivitySequence(plan: List[Plan]) extends Plan {
 case class ActivityAlternatives(potentials: Set[Plan]) extends Plan {
   override def empty = ActivityAlternatives(Set.empty)
 
-  override def startPlace = ???
+  override def potentialStartPlaces: Set[Place] = potentials.flatMap(plan => plan.potentialStartPlaces)
 
-  override def endPlace = ???
+  override def potentialEndPlaces: Set[Place] = potentials.flatMap(plan => plan.potentialEndPlaces)
 
   override def description = ???
 
-  override def placeProjection = potentials.flatMap(_.placeProjection).toList
+  override def placeProjection: List[Place] = potentials.flatMap(_.placeProjection).toList
 
-  override def flatten = potentials.toList
+  override def flatten: List[Plan] = potentials.toList
 
   override def combine(plan: Plan) = if (this == plan) this else Plan.combine(this, plan)
 
@@ -116,20 +138,20 @@ case class ActivityAlternatives(potentials: Set[Plan]) extends Plan {
 
 object Plan {
   def combine(planA: Plan, planB: Plan): Plan = (planA, planB) match {
-    case (SingleActivity(_), ActivitySequence(s2)) if planA before planB => ActivitySequence(planA :: s2)
-    case (SingleActivity(_), ActivitySequence(s2)) if planB before planA => ActivitySequence(s2 :+ planA)
-    case (ActivitySequence(s1), ActivitySequence(s2)) => ActivitySequence((s1 ++ s2) sortWith ((p1, p2) => p1.before(p2)))
+    case (SingleActivity(_), ActivitySequence(s2)) if planA possibleBefore planB => ActivitySequence(planA :: s2)
+    case (SingleActivity(_), ActivitySequence(s2)) if planB possibleBefore planA => ActivitySequence(s2 :+ planA)
+    case (ActivitySequence(s1), ActivitySequence(s2)) => ActivitySequence((s1 ++ s2) sortWith ((p1, p2) => p1.possibleBefore(p2)))
     case (_, ActivitySequence(sequence)) => sequence.foldLeft[Plan](planA) { (acc, a) =>
       acc.combine(a)
     }
     case (ActivitySequence(_), SingleActivity(_)) => planB combine planA
     case (ActivitySequence(_), _) => planB combine planA
-    case (_, _) if planA before planB => ActivitySequence(List(planA, planB))
-    case (_, _) if planB before planA => ActivitySequence(List(planB, planA))
+    case (_, _) if planA possibleBefore planB => ActivitySequence(List(planA, planB))
+    case (_, _) if planB possibleBefore planA => ActivitySequence(List(planB, planA))
 
     case (ActivityAlternatives(a1), ActivityAlternatives(a2)) => ActivityAlternatives(a1 ++ a2)
     case (ActivityAlternatives(alts), SingleActivity(_)) => ActivityAlternatives(mergeWithAlternatives(alts, planB))
-    case (SingleActivity(_), ActivityAlternatives(_)) => combine(planB,planA)
+    case (SingleActivity(_), ActivityAlternatives(_)) => combine(planB, planA)
     case (_, _) => ActivityAlternatives(Set(planA, planB))
   }
 
@@ -141,7 +163,6 @@ object Plan {
         case ActivityAlternatives(_) => acc + nextActivity
         case _ => acc + combinedActivity
       }
-
     }
   }
 
