@@ -31,7 +31,7 @@ sealed trait Plan {
 
       val timeDifference = this.temporalGapTo(plan).toDouble
       println(s"The minimum distance is ${distance.min} and time between $timeDifference")
-      distance.min < timeDifference
+      distance.min <= timeDifference
     }
   }
 
@@ -101,9 +101,9 @@ case class ActivitySequence(plan: List[Plan]) extends Plan {
     List(potentialTimeOfActivities.sorted.reverse.head)
   }
 
-  override def potentialStartPlaces: Set[Place] = plan.flatMap(b => b.potentialStartPlaces).toSet
+  override def potentialStartPlaces: Set[Place] = plan.sortBy(_.potentialStartTime.min).headOption.map(_.potentialStartPlaces).getOrElse(Set.empty)
 
-  override def potentialEndPlaces: Set[Place] = plan.flatMap(b => b.potentialEndPlaces).toSet
+  override def potentialEndPlaces: Set[Place] = plan.sortBy(-_.potentialEndTime.min).headOption.map(_.potentialEndPlaces).getOrElse(Set.empty)
 
   override def flatten: List[Plan] = plan.flatMap(b => b.flatten)
 

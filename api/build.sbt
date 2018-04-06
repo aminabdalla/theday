@@ -15,5 +15,7 @@ libraryDependencies ++= Seq(
   "org.scalamock" %% "scalamock-scalatest-support" % scalaMockVersion % Test,
   "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
   "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
+  "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
+  "org.scalamock" %% "scalamock-scalatest-support" % "3.6.0" % Test,
   "com.typesafe.akka" %% "akka-http-jackson" % akkaHttpVersion
 )

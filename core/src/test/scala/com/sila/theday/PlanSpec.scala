@@ -25,19 +25,19 @@ class PlanSpec extends BaseTest {
 
   it should "return start and end place of single static activity" in {
     unsortedSequenceOfActivities.potentialStartTime shouldBe List(0)
-    SingleActivity(staticActivityStartsAt0).potentialEndPlaces.name shouldBe "Home"
+    SingleActivity(staticActivityStartsAt0).potentialEndPlaces.head.name shouldBe "Home"
   }
 
   it should "return start and end place of single moving activity" in {
-    SingleActivity(movingActivityStartsAt2).potentialStartPlaces.name shouldBe "Supermarket"
-    SingleActivity(movingActivityStartsAt2).potentialEndPlaces.name shouldBe "Zoo"
+    SingleActivity(movingActivityStartsAt2).potentialStartPlaces.head.name shouldBe "Supermarket"
+    SingleActivity(movingActivityStartsAt2).potentialEndPlaces.head.name shouldBe "Zoo"
   }
 
   it should "return start and end place of sorted and unsorted sequence of activities" in {
-    SingleActivity(movingActivityStartsAt2).potentialEndPlaces.name shouldBe "Zoo"
-    unsortedSequenceOfActivities.potentialStartPlaces.name shouldBe "Home"
-    sequenceOfActivities.potentialEndPlaces.name shouldBe "Zoo"
-    unsortedSequenceOfActivities.potentialEndPlaces.name shouldBe "Zoo"
+    SingleActivity(movingActivityStartsAt2).potentialEndPlaces.head.name shouldBe "Zoo"
+    unsortedSequenceOfActivities.potentialStartPlaces.head.name shouldBe "Home"
+    sequenceOfActivities.potentialEndPlaces.head.name shouldBe "Zoo"
+    unsortedSequenceOfActivities.potentialEndPlaces.head.name shouldBe "Zoo"
   }
 
   it should "check if blocks of activities are before others from a temporal perspective" in {
@@ -54,8 +54,8 @@ class PlanSpec extends BaseTest {
   }
 
   it should "check if blocks of activities are chainable" in {
-    BeingAtHomeFrom0To2.isChainable(MovingFromSupermarketToZooFrom2To4) shouldBe true
-    sequenceOfActivities.isChainable(singleActivityStart4End5) shouldBe true
+    BeingAtHomeFrom0To2.isChainable(SingleActivity(PlaceTimePath(supermarketPlace, zooPlace, (2, 3), "supermarket to zoo"))) shouldBe false
+    sequenceOfActivities.isChainable(SingleActivity(PlaceTimeStation(cinemaPlace, (10, 11), ""))) shouldBe true
   }
 
   it should "temporally project activities" in {
@@ -81,7 +81,7 @@ class PlanSpec extends BaseTest {
 
   it should "combine to sequential single activities in the right order" in {
     val singleActivityFirst = SingleActivity(PlaceTimeStation(homePlace, (0, 2), "home"))
-    val singleActivitySecond = SingleActivity(PlaceTimeStation(cinemaPlace, (3, 4), "cinema"))
+    val singleActivitySecond = SingleActivity(PlaceTimeStation(cinemaPlace, (10, 11), "cinema"))
 
     val combinedResult = new ActivitySequence(List(singleActivityFirst, singleActivitySecond))
 
@@ -92,8 +92,8 @@ class PlanSpec extends BaseTest {
 
   it should "combine single and sequence activities in the right order" in {
     val singleActivityFirst = SingleActivity(PlaceTimeStation(homePlace, (0, 2), "home"))
-    val singleActivityInTheMiddle = SingleActivity(PlaceTimePath(homePlace, cinemaPlace, (2, 3), "travel"))
-    val singleActivitySecond = SingleActivity(PlaceTimeStation(cinemaPlace, (3, 4), "cinema"))
+    val singleActivityInTheMiddle = SingleActivity(PlaceTimePath(homePlace, cinemaPlace, (2, 11), "travel"))
+    val singleActivitySecond = SingleActivity(PlaceTimeStation(cinemaPlace, (12, 13), "cinema"))
 
     val activitySequence = singleActivityFirst.combine(singleActivitySecond)
 
@@ -117,7 +117,7 @@ class PlanSpec extends BaseTest {
   it should "combine two mutually exclusive activities, one single and a sequence into a Seq with a nested Alt type" in {
     val singleActivity1 = SingleActivity(PlaceTimeStation(cinemaPlace, (3, 4), "cinema"))
     val singleActivity2 = SingleActivity(PlaceTimeStation(homePlace, (3, 4), "home"))
-    val lastActivity = SingleActivity(PlaceTimeStation(uniPlace, (5, 6), "uni"))
+    val lastActivity = SingleActivity(PlaceTimeStation(uniPlace, (20, 21), "uni"))
     val sequencedActivity = ActivitySequence(List(singleActivity1, lastActivity))
     val combinedResult = ActivitySequence(List(ActivityAlternatives(Set(singleActivity1, singleActivity2)), lastActivity))
     sequencedActivity.combine(singleActivity2) shouldBe combinedResult
@@ -125,10 +125,10 @@ class PlanSpec extends BaseTest {
   }
 
   it should "combine activities into a sequence" in {
-    val singleActivity1 = SingleActivity(PlaceTimeStation(homePlace, (3, 4), "home"))
-    val singleActivity2 = SingleActivity(PlaceTimeStation(cinemaPlace, (4, 5), "cinema"))
-    val singleActivity3 = SingleActivity(PlaceTimeStation(uniPlace, (5, 6), "uni"))
-    val singleActivity4 = SingleActivity(PlaceTimeStation(viennaPlace, (6, 7), "vienna"))
+    val singleActivity1 = SingleActivity(PlaceTimeStation(homePlace, (1, 2), "home"))
+    val singleActivity2 = SingleActivity(PlaceTimeStation(cinemaPlace, (10, 11), "cinema"))
+    val singleActivity3 = SingleActivity(PlaceTimeStation(uniPlace, (20, 21), "uni"))
+    val singleActivity4 = SingleActivity(PlaceTimeStation(viennaPlace, (30, 31), "vienna"))
     val sequence1 = singleActivity1.combine(singleActivity2)
     val sequence2 = singleActivity3.combine(singleActivity4)
 
@@ -142,10 +142,10 @@ class PlanSpec extends BaseTest {
   }
 
   it should "combine alternatives with a sequence" in {
-    val atHome = SingleActivity(PlaceTimeStation(homePlace, (3, 4), "home"))
-    val atTheCinema = SingleActivity(PlaceTimeStation(cinemaPlace, (3, 4), "cinema"))
+    val atHome = SingleActivity(PlaceTimeStation(homePlace, (9, 10), "home"))
+    val atTheCinema = SingleActivity(PlaceTimeStation(cinemaPlace, (9, 10), "cinema"))
     val somethingAtTheStart = SingleActivity(PlaceTimeStation(viennaPlace,(0,2),"somethingAtTheStart"))
-    val somethingAtTheEnd = SingleActivity(PlaceTimeStation(viennaPlace,(5,6),"somethingAtTheEnd"))
+    val somethingAtTheEnd = SingleActivity(PlaceTimeStation(viennaPlace,(15,20),"somethingAtTheEnd"))
     val altActivities = ActivityAlternatives(Set(atHome,atTheCinema))
     val expectedResult = ActivitySequence(List(somethingAtTheStart,ActivityAlternatives(Set(atHome,atTheCinema)),somethingAtTheEnd))
     somethingAtTheStart combine somethingAtTheEnd combine altActivities shouldBe expectedResult
@@ -154,14 +154,15 @@ class PlanSpec extends BaseTest {
   }
 
   it should "combine alternatives with alternatives into alternatives of sequences" in {
-    val atUni = SingleActivity(PlaceTimeStation(uniPlace, (3, 4), "uni"))
-    val atHome = SingleActivity(PlaceTimeStation(homePlace, (3, 6), "home"))
+    val atUni = SingleActivity(PlaceTimeStation(uniPlace, (1, 3), "uni"))
+    val atHome = SingleActivity(PlaceTimeStation(homePlace, (1, 9), "home"))
     val homeVsUni = combine(atUni,atHome)
-    val atVienna = SingleActivity(PlaceTimeStation(viennaPlace, (4, 5), "vienna"))
-    combine(homeVsUni,atVienna) shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atVienna)),atHome))
-    combine(atVienna,homeVsUni) shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atVienna)),atHome))
-    atHome combine (atVienna combine atUni) shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atVienna)),atHome))
-    (atHome combine atVienna) combine atUni shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atVienna)),atHome))
+    val atCinema = SingleActivity(PlaceTimeStation(cinemaPlace, (8, 11), "cinema"))
+    combine(atUni,atCinema) shouldBe ActivitySequence(List(atUni,atCinema))
+    combine(homeVsUni,atCinema) shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atCinema)),atHome))
+    combine(atCinema,homeVsUni) shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atCinema)),atHome))
+    atHome combine (atCinema combine atUni) shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atCinema)),atHome))
+    (atHome combine atCinema) combine atUni shouldBe ActivityAlternatives(Set(ActivitySequence(List(atUni,atCinema)),atHome))
   }
 
 
