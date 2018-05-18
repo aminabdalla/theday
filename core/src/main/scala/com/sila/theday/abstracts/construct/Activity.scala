@@ -16,7 +16,6 @@ abstract class Activity(val name: String, val timeSpan: Interval) extends Relati
   def getEndTime: Int = timeSpan._2
 }
 
-object Activity {
 
   final case class PlaceTimeStation(var place: Place,
                                     var span: Interval,
@@ -39,6 +38,6 @@ object Activity {
     override def getStartPlace: Place = startPlace
 
     override def getEndPlace: Place = endPlace
-  }
+
 
 }

@@ -5,19 +5,14 @@ import scala.annotation.tailrec
 
 sealed abstract class Hierarchy[A] {
   def isEmpty: Boolean
-
   def value: A
-
   def subLevel: List[Hierarchy[A]]
-
   def subHierarchy(position: A): Option[Hierarchy[A]]
-
   def parent: A
-
 }
 
-
 case class Node[A](value: A, subItems: List[Hierarchy[A]], parent: A) extends Hierarchy[A] {
+
   override def isEmpty = subItems.isEmpty
 
   override def subLevel = subItems

@@ -1,32 +1,30 @@
 package com.sila.theday
 
-import com.sila.theday.abstracts.Node
-import com.sila.theday.abstracts.construct.Activity.{PlaceTimePath, PlaceTimeStation}
-import com.sila.theday.abstracts.construct._
-import com.sila.theday.abstracts.primitive.Geometry.POINT
+import com.sila.theday.abstracts.{Node, POINT}
+import com.sila.theday.abstracts.construct.{PlaceTimePath, PlaceTimeStation, _}
 import com.sila.theday.abstracts.primitive._
 import org.scalatest.{FlatSpec, Matchers}
 
 
 trait BaseTest extends FlatSpec with Matchers {
 
-  val worldPlace = Place("World", Geometry.POINT(1, 1), World)
+  val worldPlace = Place("World", POINT(1, 1), World)
 
   val europePlace = Place("Europe", POINT(0, 1), Continent)
 
   val germanyPlace = Place("Germany", POINT(0, 2), Country)
   val francePlace = Place("France", POINT(0, 2), Country)
   val ukPlace = Place("UK", POINT(0, 3), Country)
-  val austriaPlace = Place("Austria", Geometry.POINT(1, 1), Country)
+  val austriaPlace = Place("Austria", POINT(1, 1), Country)
 
   val londonPlace = Place("London", POINT(0, 4), City)
-  val viennaPlace = Place("Vienna", Geometry.POINT(1, 1), City)
-  val edinburghPlace = Place("Edinburgh", Geometry.POINT(1, 1), Country)
-  val parisPlace = Place("Paris", Geometry.POINT(1, 1), City)
+  val viennaPlace = Place("Vienna", POINT(1, 1), City)
+  val edinburghPlace = Place("Edinburgh", POINT(1, 1), Country)
+  val parisPlace = Place("Paris", POINT(1, 1), City)
 
-  val hounslowPlace = Place("Hounslow", Geometry.POINT(1, 1), District)
+  val hounslowPlace = Place("Hounslow", POINT(1, 1), District)
   val cinemaPlace = Place("Cinema", POINT(4, 5), Building)
-  val donaustadtPlace = Place("Donaustadt", Geometry.POINT(1, 1), District)
+  val donaustadtPlace = Place("Donaustadt", POINT(1, 1), District)
 
   val uniPlace = Place("Uni", POINT(0, 5), Building)
   val homePlace = Place("Home", POINT(0, 0), Building)

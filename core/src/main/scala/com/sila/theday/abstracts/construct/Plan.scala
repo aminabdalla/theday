@@ -1,6 +1,6 @@
 package com.sila.theday.abstracts.construct
 
-import com.sila.theday.abstracts.construct.Activity.PlaceTimeStation
+import com.sila.theday.abstracts.construct.PlaceTimeStation
 
 sealed trait Plan {
   type Time = Int

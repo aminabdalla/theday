@@ -1,15 +1,15 @@
 package com.sila.theday
 
-import com.sila.theday.abstracts.primitive.Geometry
+import com.sila.theday.abstracts.{BBOX, POINT}
 import org.scalatest.{FlatSpec, Matchers}
 
 class GeometrySpec extends FlatSpec with Matchers {
 
-  val point1 = Geometry.POINT(0, 0)
-  val point2 = Geometry.POINT(1, 1)
+  val point1 = POINT(0, 0)
+  val point2 = POINT(1, 1)
 
-  val pointLoc = Geometry.POINT(1, 2);
-  val bboxLoc = Geometry.BBOX((0, 0), (1, 1));
+  val pointLoc = POINT(1, 2);
+  val bboxLoc = BBOX((0, 0), (1, 1));
 
   "The Geometry" should "be convertable" in {
     pointLoc.toPointRepresentation._1 shouldBe 1

@@ -3,10 +3,9 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
-import com.sila.theday.abstracts.construct.Activity.PlaceTimeStation
-import com.sila.theday.abstracts.construct.{Place, SingleActivity}
+import com.sila.theday.abstracts.POINT
+import com.sila.theday.abstracts.construct.{Place, PlaceTimeStation, SingleActivity}
 import com.sila.theday.abstracts.primitive.City
-import com.sila.theday.abstracts.primitive.Geometry.POINT
 
 import scala.io.StdIn
 

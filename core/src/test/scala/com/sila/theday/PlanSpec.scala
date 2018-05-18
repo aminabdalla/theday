@@ -1,6 +1,6 @@
 package com.sila.theday
 
-import com.sila.theday.abstracts.construct.Activity.{PlaceTimePath, PlaceTimeStation}
+import com.sila.theday.abstracts.construct.{PlaceTimePath, PlaceTimeStation}
 import com.sila.theday.abstracts.construct.Plan._
 import com.sila.theday.abstracts.construct.{ActivityAlternatives, ActivitySequence, SingleActivity}
 

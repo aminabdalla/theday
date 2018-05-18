@@ -1,4 +1,4 @@
-//name := "core"
+name := "api"
 
 //version := "0.0.1-SNAPSHOT"
 
